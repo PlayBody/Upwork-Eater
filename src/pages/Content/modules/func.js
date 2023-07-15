@@ -49,7 +49,7 @@ const funcs = {
   },
 
   selectElement: (document, identifier, index, callback, inputData) => {
-    console.log('2 enter try select');
+    console.log('2 enter try select', document.getElementsByClassName(identifier), document);
     const observer = new MutationObserver(() => {
       let elements = document.getElementsByClassName(identifier);
       if (funcs.isEmpty(elements[index])) {
