@@ -49,24 +49,36 @@ const funcs = {
   },
 
   selectElement: (document, identifier, index, callback, inputData) => {
-    console.log('2 enter try select', document.getElementsByClassName(identifier), document);
-    const observer = new MutationObserver(() => {
-      let elements = document.getElementsByClassName(identifier);
-      if (funcs.isEmpty(elements[index])) {
-        console.log('empty element', e);
-        return;
-      }
-      // Stop observing and resolve with the selected element
-      let e = elements[index];
-      console.log('which element', e);
+    let eles = document.getElementsByClassName(identifier);
+    console.log('2 enter try select', eles[index], document);
+    let ee = eles[index];
+    if (funcs.isEmpty(ee)) {
+      const observer = new MutationObserver(() => {
+        let elements = document.getElementsByClassName(identifier);
+        let e = elements[index];
+
+        if (funcs.isEmpty(e)) {
+          console.log('empty element', e);
+          return;
+        }
+        // Stop observing and resolve with the selected element
+        console.log('which element', e);
+        if(inputData == null){
+          callback(e);
+        } else {
+          callback(inputData, e);
+        }
+        observer.disconnect();
+      });
+      observer.observe(document, { subtree: true, childList: true });
+    } else {
+      console.log('which else element', e);
       if(inputData == null){
-        callback(e);
+        callback(ee);
       } else {
-        callback(inputData, e);
+        callback(inputData, ee);
       }
-      observer.disconnect();
-    });
-    observer.observe(document, { subtree: true, childList: true });
+    }
   },
 
   trySelectElementAndCallback: (document, identifier, index, callback) => {
