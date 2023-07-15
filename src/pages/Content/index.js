@@ -33,6 +33,7 @@ const callbackWelcome = (btn) => {
 }
 
 
+
 const callbackExperience = (btn) => {
   funcs.isBtn(btn) && btn.click();
   // setTimeout(() => {
