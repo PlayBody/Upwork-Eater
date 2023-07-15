@@ -52,7 +52,7 @@ const funcs = {
     const observer = new MutationObserver(() => {
       let elements = document.getElementsByClassName(identifier);
       if (funcs.isEmpty(elements[index])) {
-        // Element not found yet, continue observing
+        console.log('empty element', e);
         return;
       }
       // Stop observing and resolve with the selected element
