@@ -90,7 +90,7 @@ const callbackDataInput = (data, input) => {
           break;
         case Constants.UpworkPages.Title:
           console.log("ok:  ", Constants.UpworkPages.Title);
-          // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
+          funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
           // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
           break;
         case Constants.UpworkPages.Employeement:
