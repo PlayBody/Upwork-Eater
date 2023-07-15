@@ -72,7 +72,7 @@ const funcs = {
       });
       observer.observe(document, { subtree: true, childList: true });
     } else {
-      console.log('which else element', e);
+      console.log('which else element', ee);
       if(inputData == null){
         callback(ee);
       } else {
