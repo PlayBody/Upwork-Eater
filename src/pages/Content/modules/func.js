@@ -88,7 +88,7 @@ const funcs = {
 
   trySelectElementAndCallbackInput: (document, identifier, index, callback, inputData) => {
     console.log('1 enter try select');
-    // funcs.selectElement(document, identifier, index, callback, inputData);
+    funcs.selectElement(document, identifier, index, callback, inputData);
   }
 }
 
