@@ -70,7 +70,7 @@ setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
     //   console.log(e.currentProfile.mainSkills)
 
-    flag = 0;
+    let flag = 0;
 
     if(!flag){
       // flag = 1;
