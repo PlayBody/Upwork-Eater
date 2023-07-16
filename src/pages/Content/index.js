@@ -57,7 +57,7 @@ const callbackDataInput = (data, input) => {
 
 // window.addEventListener('load', function () {
   setInterval(async function() {
-  // chrome.storage.local.get(Constant.currentProfile, (e) => {
+  chrome.storage.local.get(Constant.currentProfile, (e) => {
 
   //   console.log(e.currentProfile.mainSkills)
 
@@ -108,7 +108,7 @@ const callbackDataInput = (data, input) => {
         default: console.log('no Action to do automatically!!!')
       }
     }
-  // });
+  });
 
 
 }, 2000);
