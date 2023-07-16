@@ -51,7 +51,7 @@ const callbackMethod = (btn) => {
 
 const callbackDataInput = (data, input) => {
   console.log('inputdata', data, 'element', input);
-  if (funcs.isInput(input)) { input.value = data; console.log('titleInput', data); }
+  if (funcs.isInput(input)) { input.value = data; input.dispatchEvent(new Event('blur')); console.log('titleInput', data); }
 }
 
 // const callbackTitle = (btn) => {
