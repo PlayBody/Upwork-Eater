@@ -50,6 +50,7 @@ const callbackMethod = (btn) => {
 }
 
 const callbackDataInput = (data, input) => {
+  console.log('inputdata', data, 'element', input);
   if (funcs.isInput(input)) { input.value = data;console.log('titleInput', data); }
   
 }
@@ -90,8 +91,8 @@ const callbackDataInput = (data, input) => {
           break;
         case Constants.UpworkPages.Title:
           console.log("ok: title", Constants.UpworkPages.Title);
-          // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput,e.currentProfile.mainSkills);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
+          funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput,e.currentProfile.mainSkills);
+          // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
           break;
         case Constants.UpworkPages.Employeement:
 
