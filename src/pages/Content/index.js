@@ -32,8 +32,6 @@ const callbackWelcome = (btn) => {
   // }, 1000);
 }
 
-
-
 const callbackExperience = (btn) => {
   funcs.isBtn(btn) && btn.click();
   // setTimeout(() => {
@@ -51,7 +49,13 @@ const callbackMethod = (btn) => {
 
 const callbackDataInput = (data, input) => {
   console.log('inputdata', data, 'element', input);
-  if (funcs.isInput(input)) { input.value = data; input.dispatchEvent(new Event('blur')); console.log('titleInput', data); }
+  if (funcs.isInput(input)) { 
+    input.value = data;
+    setTimeout(()=>{
+      input.dispatchEvent(new Event('blur'));
+      console.log('titleInput', data);
+    }, 100);
+  }
 }
 
 // const callbackTitle = (btn) => {
@@ -64,57 +68,63 @@ const callbackDataInput = (data, input) => {
 // window.addEventListener('load', function () {
 setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
-
     //   console.log(e.currentProfile.mainSkills)
 
-    const findPage = funcs.isUpworkPage(this.document);
-    console.log("find Page", findPage);
-    if (findPage !== -1) {
-      const whPage = funcs.whichUpworkPage(this.document);
-      console.log("which Page", whPage);
-      switch (whPage) {
-        case Constants.UpworkPages.Welcome:
-          console.log("ok welcome:  ", Constants.UpworkPages.Welcome);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.getStart, 0, callbackWelcome);
-          break;
-        case Constants.UpworkPages.Experience:
-          console.log("ok exp:  ", Constants.UpworkPages.Experience);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
-          break;
-        case Constants.UpworkPages.Goal:
-          console.log("ok goal:  ", Constants.UpworkPages.Goal);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
-          break;
-        case Constants.UpworkPages.WorkPreference:
-          console.log("ok prefer:  ", Constants.UpworkPages.WorkPreference);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
-          break;
-        case Constants.UpworkPages.ResumeImport:
-          console.log("ok resume:  ", Constants.UpworkPages.ResumeImport);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.inMethod, 3, callbackMethod);
-          // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
-          // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
-          break;
-        case Constants.UpworkPages.Title:
-          console.log("ok: title", Constants.UpworkPages.Title);
-          funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
-          setTimeout(function () {
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
-          }, 500);
-          break;
-        case Constants.UpworkPages.Employeement:
+    flag = 0;
 
-          break;
-        case Constants.UpworkPages.Education:
-          break;
-        case Constants.UpworkPages.Certificate:
-          //action on 'Certification' page
-          break;
-        case Constants.UpworkPages.Langauges:
-          //action on 'Languages' page
-          break;
-        default: console.log('no Action to do automatically!!!')
+    if(!flag){
+      // flag = 1;
+      const findPage = funcs.isUpworkPage(this.document);
+      console.log("find Page", findPage);
+      if (findPage !== -1) {
+        const whPage = funcs.whichUpworkPage(this.document);
+        console.log("which Page", whPage);
+        switch (whPage) {
+          case Constants.UpworkPages.Welcome:
+            console.log("ok welcome:  ", Constants.UpworkPages.Welcome);
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.getStart, 0, callbackWelcome);
+            break;
+          case Constants.UpworkPages.Experience:
+            console.log("ok exp:  ", Constants.UpworkPages.Experience);
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
+            break;
+          case Constants.UpworkPages.Goal:
+            console.log("ok goal:  ", Constants.UpworkPages.Goal);
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
+            break;
+          case Constants.UpworkPages.WorkPreference:
+            console.log("ok prefer:  ", Constants.UpworkPages.WorkPreference);
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
+            break;
+          case Constants.UpworkPages.ResumeImport:
+            console.log("ok resume:  ", Constants.UpworkPages.ResumeImport);
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.inMethod, 3, callbackMethod);
+            // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
+            // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
+            break;
+          case Constants.UpworkPages.Title:
+            console.log("ok: title", Constants.UpworkPages.Title);
+            funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
+            setTimeout(function () {
+              funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
+            }, 500);
+            break;
+          case Constants.UpworkPages.Employeement:
+
+            break;
+          case Constants.UpworkPages.Education:
+            break;
+          case Constants.UpworkPages.Certificate:
+            //action on 'Certification' page
+            break;
+          case Constants.UpworkPages.Langauges:
+            //action on 'Languages' page
+            break;
+          default: console.log('no Action to do automatically!!!')
+        }
       }
+    } else {
+      return;
     }
   });
 
