@@ -51,21 +51,21 @@ const callbackMethod = (btn) => {
 
 const callbackDataInput = (data, input) => {
   console.log('inputdata', data, 'element', input);
-  if (funcs.isInput(input)) { input.value = data;console.log('titleInput', data); }
+  if (funcs.isInput(input)) { input.value = data; console.log('titleInput', data); }
 }
 
-const callbackTitle = (btn) => {
-  setTimeout(function() {
-    btn.click();
-  }, 500);
-}
+// const callbackTitle = (btn) => {
+//   setTimeout(function() {
+//     btn.click();
+//   }, 500);
+// }
 
 
 // window.addEventListener('load', function () {
-  setInterval(async function() {
+setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
 
-  //   console.log(e.currentProfile.mainSkills)
+    //   console.log(e.currentProfile.mainSkills)
 
     const findPage = funcs.isUpworkPage(this.document);
     console.log("find Page", findPage);
@@ -97,8 +97,10 @@ const callbackTitle = (btn) => {
           break;
         case Constants.UpworkPages.Title:
           console.log("ok: title", Constants.UpworkPages.Title);
-          funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput,e.currentProfile.mainSkills);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackTitle);
+          funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
+          setTimeout(function () {
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
+          }, 500);
           break;
         case Constants.UpworkPages.Employeement:
 
