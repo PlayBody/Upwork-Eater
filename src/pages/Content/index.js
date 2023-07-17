@@ -63,7 +63,7 @@ const callbackDateInput = (data, input) => {
   if (funcs.isInput(input)) {
     input.innerHTML = data;
     setTimeout(() => {
-      input.dispatchEvent(new Event('blur'));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
       console.log('titleInput', data);
     }, 100);
   }
@@ -127,14 +127,20 @@ setInterval(async function () {
               const experience = e.currentProfile.experience;
               experience.map((each) => {
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expTitle, 1, callbackDataInput, each.title);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 2, callbackDataInput, each.expCompany);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 2, callbackDataInput, each.company);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCity, 3, callbackDataInput, each.location);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartM, 1, callbackDateInput, each.fromM);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartY, 2, callbackDateInput, each.fromY);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndM, 3, callbackDateInput, each.toM);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndY, 4, callbackDateInput, each.toY);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackDataInput, each.description);
-                funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
+                setTimeout(() => {
+                  const experience = e.currentProfile.experience;
+                  experience.map((each) => {
+                    funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
+                  }
+                  )
+                }, 100);
               }
               )
             }, 100);
