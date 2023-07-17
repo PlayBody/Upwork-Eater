@@ -7,7 +7,7 @@ const Constants = {
     WorkPreference: "work-preference",
     ResumeImport: "resume-import",
     Title: "title",
-    Employeement: "employeement",
+    Employeement: "employment",
     Education: "education",
     Certificate: "certification",
     Langauges: "languages",
