@@ -58,6 +58,20 @@ const callbackDataInput = (data, input) => {
   }
 }
 
+const callbackModelInput = (data, input) => {
+  if (funcs.isInput(input)) {
+    const  clickEvent = new MouseEvent("click", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    input.dispatchEvent(clickEvent);
+    setTimeout(()=>{
+      input.value=data;
+    }, 100)
+  }
+}
+
 const callbackDateInput = (data, input) => {
   console.log('inputdata', data, 'element', input);
   if (funcs.isInput(input)) {
@@ -126,14 +140,14 @@ setInterval(async function () {
             setTimeout(() => {
               const experience = e.currentProfile.experience;
               experience.map((each) => {
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expTitle, 1, callbackDataInput, each.title);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 2, callbackDataInput, each.company);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCity, 3, callbackDataInput, each.location);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expTitle, 1, callbackModelInput, each.title);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 2, callbackModelInput, each.company);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCity, 3, callbackModelInput, each.location);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartM, 1, callbackDateInput, each.fromM);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartY, 2, callbackDateInput, each.fromY);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndM, 3, callbackDateInput, each.toM);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndY, 4, callbackDateInput, each.toY);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackDataInput, each.description);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackModelInput, each.description);
                 setTimeout(() => {
                   const experience = e.currentProfile.experience;
                   experience.map((each) => {
