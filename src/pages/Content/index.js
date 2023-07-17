@@ -49,9 +49,9 @@ const callbackMethod = (btn) => {
 
 const callbackDataInput = (data, input) => {
   console.log('inputdata', data, 'element', input);
-  if (funcs.isInput(input)) { 
+  if (funcs.isInput(input)) {
     input.value = data;
-    setTimeout(()=>{
+    setTimeout(() => {
       input.dispatchEvent(new Event('blur'));
       console.log('titleInput', data);
     }, 100);
@@ -72,7 +72,7 @@ setInterval(async function () {
 
     let flag = 0;
 
-    if(!flag){
+    if (!flag) {
       // flag = 1;
       const findPage = funcs.isUpworkPage(this.document);
       console.log("find Page", findPage);
@@ -110,7 +110,23 @@ setInterval(async function () {
             }, 500);
             break;
           case Constants.UpworkPages.Employeement:
-
+            console.log('ok experience', Constant.UpworkPages.Employeement);
+            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.addExp, 0, callbackWelcome);
+            setTimeout(() => {
+              const experience = e.currentProfile.experience;
+              experience.map((each) => {
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expTitle, 0, callbackDataInput, each.title);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 1, callbackDataInput, each.expCompany);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCity, 3, callbackDataInput, each.location);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartM, 1, callbackDataInput, each.fromM);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartY, 2, callbackDataInput, each.fromY);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndM, 3, callbackDataInput, each.toM);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndY, 4, callbackDataInput, each.toY);
+                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackDataInput, each.description);
+                funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
+              }
+              )
+            }, 100);
             break;
           case Constants.UpworkPages.Education:
             break;
