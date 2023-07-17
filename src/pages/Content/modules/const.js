@@ -19,8 +19,8 @@ const Constants = {
     titleIn: 'air3-input form-control',
     nextBtn: 'air3-btn air3-btn-primary',
     addExp: 'air3-btn air3-btn-lg air3-btn-secondary-inverted air3-btn-circle',
-    expTitle: 'air3-typeahead-input-main air3-input',
-    expCompany: 'air3-typeahead-input-main air3-input',//1
+    expTitle: 'air3-input',//1
+    expCompany: 'air3-input',//2
     expCity: 'air3-input',//3
     expStartM: 'air3-dropdown-toggle-label ellipsis',//1
     expStartY: 'air3-dropdown-toggle-label ellipsis',//2
