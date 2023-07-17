@@ -48,12 +48,10 @@ const callbackMethod = (btn) => {
 }
 
 const callbackDataInput = (data, input) => {
-  console.log('inputdata', data, 'element', input);
   if (funcs.isInput(input)) {
     input.value = data;
     setTimeout(() => {
       input.dispatchEvent(new Event('blur'));
-      console.log('titleInput', data);
     }, 100);
   }
 }
@@ -100,10 +98,8 @@ setInterval(async function () {
     if (!flag) {
       // flag = 1;
       const findPage = funcs.isUpworkPage(this.document);
-      console.log("find Page", findPage);
       if (findPage !== -1) {
         const whPage = funcs.whichUpworkPage(this.document);
-        console.log("which Page", whPage);
         switch (whPage) {
           case Constants.UpworkPages.Welcome:
             console.log("ok welcome:  ", Constants.UpworkPages.Welcome);
@@ -135,7 +131,6 @@ setInterval(async function () {
             }, 500);
             break;
           case Constants.UpworkPages.Employeement:
-            console.log('ok employment', Constants.UpworkPages.Employeement);
             funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.addExp, 0, callbackWelcome);
             setTimeout(() => {
               const experience = e.currentProfile.experience;

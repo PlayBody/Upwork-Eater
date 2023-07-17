@@ -27,13 +27,11 @@ const funcs = {
 
   clickButton: (btn) => {
     btn.then(e => {
-      console.log("btn", e);
     })
   },
 
   isBtn: (e) => {
     if (!funcs.isEmpty(e) && typeof e.click === 'function') {
-      console.log('enable to click!')
       return true;
     } else {
       return false;
@@ -50,7 +48,6 @@ const funcs = {
 
   selectElement: (document, identifier, index, callback, inputData) => {
     let eles = document.getElementsByClassName(identifier);
-    console.log('2 enter try select', eles[index], document);
     let ee = eles[index];
     if (funcs.isEmpty(ee)) {
       const observer = new MutationObserver(() => {
@@ -58,11 +55,9 @@ const funcs = {
         let e = elements[index];
 
         if (funcs.isEmpty(e)) {
-          console.log('empty element', e);
           return;
         }
         // Stop observing and resolve with the selected element
-        console.log('which element', e);
         if(inputData == null){
           callback(e);
         } else {
@@ -72,7 +67,6 @@ const funcs = {
       });
       observer.observe(document, { subtree: true, childList: true });
     } else {
-      console.log('which else element', ee);
       if(inputData == null){
         callback(ee);
       } else {
@@ -82,12 +76,10 @@ const funcs = {
   },
 
   trySelectElementAndCallback: (document, identifier, index, callback) => {
-    console.log('1 enter try select');
     funcs.selectElement(document, identifier, index, callback, null);
   },
 
   trySelectElementAndCallbackInput: (document, identifier, index, callback, inputData) => {
-    console.log('1 enter try select');
     funcs.selectElement(document, identifier, index, callback, inputData);
   }
 }
