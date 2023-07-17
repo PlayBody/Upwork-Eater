@@ -110,7 +110,7 @@ setInterval(async function () {
             }, 500);
             break;
           case Constants.UpworkPages.Employeement:
-            console.log('ok experience', Constant.UpworkPages.Employeement);
+            console.log('ok employment', Constants.UpworkPages.Employeement);
             funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.addExp, 0, callbackWelcome);
             setTimeout(() => {
               const experience = e.currentProfile.experience;
