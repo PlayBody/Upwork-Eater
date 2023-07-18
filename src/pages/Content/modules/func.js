@@ -39,7 +39,7 @@ const funcs = {
   },
 
   isInput: (e) => {
-    if (!funcs.isEmpty(e) && typeof e.value === 'string') {
+    if (!funcs.isEmpty(e) && (typeof e.value === 'string'||typeof e.innerHTML === 'string')) {
       return true;
     } else {
       return false;

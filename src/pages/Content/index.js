@@ -58,14 +58,9 @@ const callbackDataInput = (data, input) => {
 
 const callbackModelInput = (data, input) => {
   if (funcs.isInput(input)) {
-    const  clickEvent = new MouseEvent("click", {
-      view: window,
-      bubbles: true,
-      cancelable: true,
-    });
-    input.dispatchEvent(clickEvent);
+    input.value=data;
     setTimeout(()=>{
-      input.value=data;
+      input.dispatchEvent(new Event('blur'));
     }, 100)
   }
 }
@@ -75,7 +70,7 @@ const callbackDateInput = (data, input) => {
   if (funcs.isInput(input)) {
     input.innerHTML = data;
     setTimeout(() => {
-      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.dispatchEvent(new Event('blur'));
       console.log('titleInput', data);
     }, 100);
   }
