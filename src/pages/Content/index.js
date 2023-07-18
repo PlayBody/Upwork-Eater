@@ -74,7 +74,7 @@ const callbackDateInput = (data, input) => {
     setTimeout(() => {
       const inputEvent = new Event('input', { bubbles: true });
       // Dispatch the "input" event on the input field element
-      input.dispatchEvent(inputEvent); F
+      input.dispatchEvent(inputEvent); 
     }, 100);
   }
 }
