@@ -139,11 +139,7 @@ setInterval(async function () {
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndY, 4, callbackDateInput, each.toY);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackModelInput, each.description);
                 setTimeout(() => {
-                  const experience = e.currentProfile.experience;
-                  experience.map((each) => {
                     funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
-                  }
-                  )
                 }, 100);
               }
               )
