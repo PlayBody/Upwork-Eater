@@ -60,7 +60,9 @@ const callbackModelInput = (data, input) => {
   if (funcs.isInput(input)) {
     input.value = data;
     setTimeout(() => {
-      input.dispatchEvent(new Event('blur'));
+      const inputEvent = new Event('input', { bubbles: true });
+      // Dispatch the "input" event on the input field element
+      input.dispatchEvent(inputEvent);
     }, 100)
   }
 }
@@ -70,8 +72,9 @@ const callbackDateInput = (data, input) => {
   if (funcs.isInput(input)) {
     input.innerHTML = data;
     setTimeout(() => {
-      input.dispatchEvent(new Event('blur'));
-      console.log('titleInput', data);
+      const inputEvent = new Event('input', { bubbles: true });
+      // Dispatch the "input" event on the input field element
+      input.dispatchEvent(inputEvent); F
     }, 100);
   }
 }
