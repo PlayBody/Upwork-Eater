@@ -58,8 +58,8 @@ const callbackDataInput = (data, input) => {
 
 const callbackModelInput = (data, input) => {
   if (funcs.isInput(input)) {
-    input.value=data;
-    setTimeout(()=>{
+    input.value = data;
+    setTimeout(() => {
       input.dispatchEvent(new Event('blur'));
     }, 100)
   }
@@ -130,6 +130,10 @@ setInterval(async function () {
             setTimeout(() => {
               const experience = e.currentProfile.experience;
               experience.map((each) => {
+                setTimeout(() => {
+
+                }, 100)
+
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expTitle, 1, callbackModelInput, each.title);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 2, callbackModelInput, each.company);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCity, 3, callbackModelInput, each.location);
@@ -139,8 +143,8 @@ setInterval(async function () {
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndY, 4, callbackDateInput, each.toY);
                 funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackModelInput, each.description);
                 setTimeout(() => {
-                    funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
-                }, 100);
+                  funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
+                }, 1000);
               }
               )
             }, 100);
