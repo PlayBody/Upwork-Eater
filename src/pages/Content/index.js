@@ -71,8 +71,8 @@ const callbackModelInput = (data, input) => {
 }
 
 const callbackDateInput = (data, input) => {
-  console.log('inputdata', data, 'element', input);
   if (funcs.isInput(input)) {
+  console.log('inputdata', data, 'element', input);
     input.innerHTML = data;
     setTimeout(() => {
       input.dispatchEvent(new Event("change", { bubbles: true }));
