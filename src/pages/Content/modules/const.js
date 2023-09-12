@@ -1,6 +1,7 @@
 const Constants = {
   UpworkPages: {
     NoUpwork: "NoUpwork",
+    CreateProfile: "create-profile",
     Welcome: "welcome",
     Experience: "experience",
     Goal: "goal",
@@ -9,12 +10,13 @@ const Constants = {
     Title: "title",
     Employeement: "employment",
     Education: "education",
+    Languages: "languages",
     Certificate: "certification",
-    Langauges: "languages",
   },
   BtnClassIden: {
     getStart: 'air3-btn air3-btn-primary mr-7',
     skipBtn: 'air3-btn air3-btn-link air3-wizard-skip-link-btn',
+    upCVContinue: 'air3-btn air3-btn-primary mb-0',
     inMethod: 'mb-3 air3-btn air3-btn-secondary',
     titleIn: 'air3-input form-control',
     nextBtn: 'air3-btn air3-btn-primary',

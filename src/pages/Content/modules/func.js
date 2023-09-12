@@ -47,9 +47,9 @@ const funcs = {
   },
 
   selectElement: (document, identifier, index, callback, inputData) => {
-    let eles = document.getElementsByClassName(identifier);
-    let ee = eles[index];
-    if (funcs.isEmpty(ee)) {
+    let findElements = document.getElementsByClassName(identifier);
+    let findElement = findElements[index];
+    if (funcs.isEmpty(findElement)) {
       const observer = new MutationObserver(() => {
         let elements = document.getElementsByClassName(identifier);
         let e = elements[index];
@@ -68,9 +68,9 @@ const funcs = {
       observer.observe(document, { subtree: true, childList: true });
     } else {
       if(inputData == null){
-        callback(ee);
+        callback(findElement);
       } else {
-        callback(inputData, ee);
+        callback(inputData, findElement);
       }
     }
   },

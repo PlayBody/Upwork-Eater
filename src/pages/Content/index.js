@@ -11,6 +11,8 @@ console.log('Must reload extension for modifications to take effect.');
 
 printLine("Using the 'printLine' function from the Print Module");
 
+const UpworkPages = Constants.UpworkPages;
+const BtnClassIden = Constants.BtnClassIden;
 
 // // Function to handle URL change events
 // function handleURLChange(details) {
@@ -24,24 +26,8 @@ printLine("Using the 'printLine' function from the Print Module");
 // chrome.webNavigation.onCompleted.addListener(handleURLChange);
 
 
-
-const callbackWelcome = (btn) => {
+const callbackBtnClick = (btn) => {
   funcs.isBtn(btn) && btn.click();
-  // setTimeout(() => {
-  //   location.reload();
-  // }, 1000);
-}
-
-const callbackExperience = (btn) => {
-  funcs.isBtn(btn) && btn.click();
-  // setTimeout(() => {
-  //   location.reload();
-  // }, 1000);
-}
-
-const callbackMethod = (btn) => {
-  // if (funcs.isBtn(btn) && btn.click()) { funcs.isBtn(btn) && btn.click() };
-  btn.click();
   // setTimeout(() => {
   //   location.reload();
   // }, 1000);
@@ -96,68 +82,50 @@ setInterval(async function () {
     if (!flag) {
       // flag = 1;
       const findPage = funcs.isUpworkPage(this.document);
-      if (findPage !== -1) {
-        const whPage = funcs.whichUpworkPage(this.document);
-        switch (whPage) {
-          case Constants.UpworkPages.Welcome:
-            console.log("ok welcome:  ", Constants.UpworkPages.Welcome);
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.getStart, 0, callbackWelcome);
+      if (findPage) {
+        const whichPage = funcs.whichUpworkPage(this.document);
+        switch (whichPage) {
+          case UpworkPages.CreateProfile:            
+            console.log("ok create profile:  ", UpworkPages.CreateProfile);
+            funcs.trySelectElementAndCallback(this.document, BtnClassIden.getStart, 0, callbackBtnClick);
             break;
-          case Constants.UpworkPages.Experience:
-            console.log("ok exp:  ", Constants.UpworkPages.Experience);
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
+          case UpworkPages.Welcome:
+            console.log("ok welcome:  ", UpworkPages.Welcome);
+            funcs.trySelectElementAndCallback(this.document, BtnClassIden.getStart, 0, callbackBtnClick);
             break;
-          case Constants.UpworkPages.Goal:
-            console.log("ok goal:  ", Constants.UpworkPages.Goal);
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
+          case UpworkPages.Experience:
+            console.log("ok exp:  ", UpworkPages.Experience);
+            funcs.trySelectElementAndCallback(this.document, BtnClassIden.skipBtn, 0, callbackBtnClick);
             break;
-          case Constants.UpworkPages.WorkPreference:
-            console.log("ok prefer:  ", Constants.UpworkPages.WorkPreference);
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
+          case UpworkPages.Goal:
+            console.log("ok goal:  ", UpworkPages.Goal);
+            funcs.trySelectElementAndCallback(this.document, BtnClassIden.skipBtn, 0, callbackBtnClick);
             break;
-          case Constants.UpworkPages.ResumeImport:
-            console.log("ok resume:  ", Constants.UpworkPages.ResumeImport);
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.inMethod, 3, callbackMethod);
-            // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
-            // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
+          case UpworkPages.WorkPreference:
+            console.log("ok prefer:  ", UpworkPages.WorkPreference);
+            funcs.trySelectElementAndCallback(this.document, BtnClassIden.skipBtn, 0, callbackBtnClick);
             break;
-          case Constants.UpworkPages.Title:
-            console.log("ok: title", Constants.UpworkPages.Title);
-            funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
-            setTimeout(function () {
-              funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
-            }, 500);
+          case UpworkPages.ResumeImport:
+            console.log("ok resume:  ", UpworkPages.ResumeImport);
+            funcs.trySelectElementAndCallback(this.document, BtnClassIden.upCVContinue, 0, callbackBtnClick);
+            // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
+            // funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackWelcome);
             break;
-          case Constants.UpworkPages.Employeement:
-            funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.addExp, 0, callbackWelcome);
-            setTimeout(() => {
-              const experience = e.currentProfile.experience;
-              experience.map((each) => {
-                setTimeout(() => {
-
-                }, 100)
-
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expTitle, 1, callbackModelInput, each.title);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCompany, 2, callbackModelInput, each.company);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expCity, 3, callbackModelInput, each.location);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartM, 1, callbackDateInput, each.fromM);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expStartY, 2, callbackDateInput, each.fromY);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndM, 3, callbackDateInput, each.toM);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expEndY, 4, callbackDateInput, each.toY);
-                funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.expDes, 0, callbackModelInput, each.description);
-                setTimeout(() => {
-                  funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.expSave, 0, callbackWelcome);
-                }, 1000);
-              }
-              )
-            }, 100);
+          case UpworkPages.Title:
+            // console.log("ok: title", UpworkPages.Title);
+            // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
+            // setTimeout(function () {
+            //   funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackBtnClick);
+            // }, 500);
+            // break;
+          case UpworkPages.Employeement:
             break;
-          case Constants.UpworkPages.Education:
+          case UpworkPages.Education:
             break;
-          case Constants.UpworkPages.Certificate:
+          case UpworkPages.Certificate:
             //action on 'Certification' page
             break;
-          case Constants.UpworkPages.Langauges:
+          case UpworkPages.Languages:
             //action on 'Languages' page
             break;
           default: console.log('no Action to do automatically!!!')
