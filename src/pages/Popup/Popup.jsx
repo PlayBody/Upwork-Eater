@@ -12,7 +12,6 @@ const { profiles, currentProfile } = Constant;
 
 const { Option } = Select;
 
-
 const Popup = () => {
   const [save, setSave] = useState([]);
 

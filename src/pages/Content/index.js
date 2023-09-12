@@ -161,7 +161,7 @@ setInterval(async function () {
           case PageUrlPatterns.Skills:  
             console.log("ok skills:  ", PageUrlPatterns.Skills);
             funcs.trySelectElementBySelector(this.document, OtherControls.skillsList, 0, (listParent) => {
-              if(listParent.children.length > 0) {
+              if(listParent && listParent.children && listParent.children.length > 0) {
                 listParent.children[0].click();
               } else {
                 funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
@@ -193,7 +193,7 @@ setInterval(async function () {
             funcs.loadFromLocal(Ids.hourlyInputState, (index) => {
               if(funcs.isEmpty(index) || index === 0){
                 funcs.saveToLocal(Ids.hourlyInputState, 1, () => {
-                  funcs.trySelectElementBySelector(this.document, OtherControls.inputHourly, 0, callbackDataInput, "40");
+                  funcs.trySelectElementBySelector(this.document, OtherControls.inputHourly, 0, callbackDataInput, "$40");
                 });
               } else if(index === 1){
                 funcs.saveToLocal(Ids.hourlyInputState, 0, () => {
@@ -220,6 +220,6 @@ setInterval(async function () {
       return;
     }
   });
-}, 2500);
+}, 1000);
 // });
 
