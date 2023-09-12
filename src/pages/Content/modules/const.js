@@ -1,7 +1,9 @@
 const Constants = {
-  UpworkPages: {
+  PageUrlPatterns: {
     NoUpwork: "NoUpwork",
-    CreateProfile: "create-profile",
+    SignUp: "nx/signup/",
+    SignUpDest: "nx/signup/?dest=home",
+    CreateProfile: "create-profile/",
     Welcome: "welcome",
     Experience: "experience",
     Goal: "goal",
@@ -12,8 +14,15 @@ const Constants = {
     Education: "education",
     Languages: "languages",
     Certificate: "certification",
+    Skills: "skills",
+    Overview: "overview",
+    Categories: "categories",
+    Rate: "rate",
+    Location: "location",
+    Submit: "submit",
+    Finish: "finish",
   },
-  BtnClassIden: {
+  BtnClassNames: {
     getStart: 'air3-btn air3-btn-primary mr-7',
     skipBtn: 'air3-btn air3-btn-link air3-wizard-skip-link-btn',
     upCVContinue: 'air3-btn air3-btn-primary mb-0',
@@ -31,7 +40,23 @@ const Constants = {
     expDes: 'air3-textarea',
     expSave: 'air3-btn air3-btn-primary mr-0 mb-0',
     expNext: 'air3-btn air3-btn-primary'//3
-
+  },
+  OtherControls: {
+    signUpFreelancerRadio: 'input[type="radio"][aria-labelledby="button-box-4"]',
+    languageComboList: 'ul[aria-labelledby="dropdown-label-english"][role="listbox"][data-test="menu"]',
+    languageCombo:'div[data-test="dropdown-toggle"][aria-expanded="false"]',
+    skillsList: 'div[aria-labelledby="token-container-label"][class="token-container"]',
+    categoryAddBtns: 'button:not([aria-disabled="true"])[data-qa="category-add-btn"][role="button"]',
+    inputHourly: 'input[type="text"][aria-describedby="currency-hourly-83 hourly-rate-description"]',
+    nextBtn: 'button[data-test="next-button"][type="button"][class="air3-btn air3-btn-primary"]',
+    applyAsFreelancerBtn: 'button[data-qa="btn-apply"][type="button"][class="up-btn up-btn-primary width-md up-btn-block"]',
+    submitBtn: 'button[data-qa="submit-profile-top-btn"][class="submit-profile-top-btn air3-btn air3-btn-primary width-md m-0"]',
+    browseJobBtn: 'a[class="up-n-link air3-btn air3-btn-primary"]',
+  },
+  Ids: {
+    signupSelectState: "signupSelectState",
+    languageComboState: "languageComboState",
+    hourlyInputState: "hourlyInputState",
   }
 }
 

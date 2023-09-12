@@ -11,8 +11,7 @@ console.log('Must reload extension for modifications to take effect.');
 
 printLine("Using the 'printLine' function from the Print Module");
 
-const UpworkPages = Constants.UpworkPages;
-const BtnClassIden = Constants.BtnClassIden;
+const { PageUrlPatterns, BtnClassNames, OtherControls, Ids } = Constants;
 
 // // Function to handle URL change events
 // function handleURLChange(details) {
@@ -65,13 +64,6 @@ const callbackDateInput = (data, input) => {
   }
 }
 
-// const callbackTitle = (btn) => {
-//   setTimeout(function() {
-//     btn.click();
-//   }, 500);
-// }
-
-
 // window.addEventListener('load', function () {
 setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
@@ -85,48 +77,141 @@ setInterval(async function () {
       if (findPage) {
         const whichPage = funcs.whichUpworkPage(this.document);
         switch (whichPage) {
-          case UpworkPages.CreateProfile:            
-            console.log("ok create profile:  ", UpworkPages.CreateProfile);
-            funcs.trySelectElementAndCallback(this.document, BtnClassIden.getStart, 0, callbackBtnClick);
+          case PageUrlPatterns.SignUp:
+          case PageUrlPatterns.SignUpDest:
+            console.log("ok signUp: ", PageUrlPatterns.SignUp);
+            funcs.loadFromLocal(Ids.signupSelectState, (index) => {
+              if(funcs.isEmpty(index) || index === 0){
+                funcs.saveToLocal(Ids.signupSelectState, 1, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.signUpFreelancerRadio, 0, callbackBtnClick);
+                });
+              } else if(index === 1){
+                funcs.saveToLocal(Ids.signupSelectState, 0, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.applyAsFreelancerBtn, 0, callbackBtnClick);
+                });
+              }
+            });
             break;
-          case UpworkPages.Welcome:
-            console.log("ok welcome:  ", UpworkPages.Welcome);
-            funcs.trySelectElementAndCallback(this.document, BtnClassIden.getStart, 0, callbackBtnClick);
+          case PageUrlPatterns.CreateProfile:
+            console.log("ok create profile:  ", PageUrlPatterns.CreateProfile);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.getStart, 0, callbackBtnClick);
             break;
-          case UpworkPages.Experience:
-            console.log("ok exp:  ", UpworkPages.Experience);
-            funcs.trySelectElementAndCallback(this.document, BtnClassIden.skipBtn, 0, callbackBtnClick);
+          case PageUrlPatterns.Welcome:
+            console.log("ok welcome:  ", PageUrlPatterns.Welcome);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.getStart, 0, callbackBtnClick);
             break;
-          case UpworkPages.Goal:
-            console.log("ok goal:  ", UpworkPages.Goal);
-            funcs.trySelectElementAndCallback(this.document, BtnClassIden.skipBtn, 0, callbackBtnClick);
+          case PageUrlPatterns.Experience:
+            console.log("ok exp:  ", PageUrlPatterns.Experience);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
             break;
-          case UpworkPages.WorkPreference:
-            console.log("ok prefer:  ", UpworkPages.WorkPreference);
-            funcs.trySelectElementAndCallback(this.document, BtnClassIden.skipBtn, 0, callbackBtnClick);
+          case PageUrlPatterns.Goal:
+            console.log("ok goal:  ", PageUrlPatterns.Goal);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
             break;
-          case UpworkPages.ResumeImport:
-            console.log("ok resume:  ", UpworkPages.ResumeImport);
-            funcs.trySelectElementAndCallback(this.document, BtnClassIden.upCVContinue, 0, callbackBtnClick);
+          case PageUrlPatterns.WorkPreference:
+            console.log("ok prefer:  ", PageUrlPatterns.WorkPreference);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.ResumeImport:
+            console.log("ok resume:  ", PageUrlPatterns.ResumeImport);
             // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
             // funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackWelcome);
             break;
-          case UpworkPages.Title:
+          case PageUrlPatterns.Title:
             // console.log("ok: title", UpworkPages.Title);
             // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
             // setTimeout(function () {
             //   funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackBtnClick);
             // }, 500);
             // break;
-          case UpworkPages.Employeement:
+          case PageUrlPatterns.Employeement:
             break;
-          case UpworkPages.Education:
+          case PageUrlPatterns.Education:
             break;
-          case UpworkPages.Certificate:
+          case PageUrlPatterns.Certificate:
             //action on 'Certification' page
             break;
-          case UpworkPages.Languages:
-            //action on 'Languages' page
+          case PageUrlPatterns.Languages:
+            console.log("ok language:  ", PageUrlPatterns.Languages);
+            funcs.loadFromLocal(Ids.languageComboState, (index) => {
+              if(funcs.isEmpty(index) || index === 0){
+                funcs.trySelectElementBySelector(this.document, OtherControls.languageCombo, 0, (combo) => {
+                  funcs.saveToLocal(Ids.languageComboState, 1, () => {
+                    combo.click();
+                  });
+                });
+                console.log("Languages 1");
+              } else if(index === 1){
+                funcs.trySelectElementBySelector(this.document, OtherControls.languageComboList, 0, (listParent) => {
+                  funcs.saveToLocal(Ids.languageComboState, 2, () => {
+                    console.log("listParent", listParent);
+                    listParent.children[2].click();
+                  });
+                });
+                
+                console.log("Languages 2");
+              } else if(index === 2){
+                funcs.saveToLocal(Ids.languageComboState, 0, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+                });
+                console.log("Languages 3");
+              }
+            });
+            break;
+          case PageUrlPatterns.Skills:  
+            console.log("ok skills:  ", PageUrlPatterns.Skills);
+            funcs.trySelectElementBySelector(this.document, OtherControls.skillsList, 0, (listParent) => {
+              if(listParent.children.length > 0) {
+                listParent.children[0].click();
+              } else {
+                funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+              }
+            });
+            break;
+          case PageUrlPatterns.Overview:
+            console.log("ok overview:  ", PageUrlPatterns.Overview);
+            break;
+          case PageUrlPatterns.Categories:
+            console.log("ok categories:  ", PageUrlPatterns.Categories);
+            funcs.trySelectElementBySelector(this.document, OtherControls.categoryAddBtns, null, (btns) => {
+              let i = 0;
+              for(i = 0; i<btns.length; i++){
+                let btn = btns[i];
+                if(btn.ariaLabel.indexOf("Development") !== -1){
+                  btn.click();
+                  break;
+                }
+              }
+              if(i === btns.length){
+                funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+              }
+            });
+            break;
+          case PageUrlPatterns.Rate:
+            console.log("ok rate:  ", PageUrlPatterns.Rate);
+            
+            funcs.loadFromLocal(Ids.hourlyInputState, (index) => {
+              if(funcs.isEmpty(index) || index === 0){
+                funcs.saveToLocal(Ids.hourlyInputState, 1, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.inputHourly, 0, callbackDataInput, "40");
+                });
+              } else if(index === 1){
+                funcs.saveToLocal(Ids.hourlyInputState, 0, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+                });
+              }
+            });
+            break;
+          case PageUrlPatterns.Location:
+            console.log("ok location:  ", PageUrlPatterns.Location);
+            break;
+          case PageUrlPatterns.Submit:
+            console.log("ok submit:  ", PageUrlPatterns.Submit);
+            funcs.trySelectElementBySelector(this.document, OtherControls.submitBtn, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.Finish:
+            console.log("ok finish:  ", PageUrlPatterns.Finish);
+            funcs.trySelectElementBySelector(this.document, OtherControls.browseJobBtn, 0, callbackBtnClick);
             break;
           default: console.log('no Action to do automatically!!!')
         }
@@ -135,8 +220,6 @@ setInterval(async function () {
       return;
     }
   });
-
-
-}, 2000);
+}, 2500);
 // });
 
