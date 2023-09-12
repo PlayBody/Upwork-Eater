@@ -1,6 +1,25 @@
 import Constants from "./const";
 
 const funcs = {
+  saveToLocal: (key, value, callback = null) => {
+    chrome.storage.local.get(null, function(items) {
+      items[key] = value;
+      chrome.storage.local.set(items, function() {
+        if(!!callback && typeof callback === 'function'){
+          callback();
+        }
+      })
+    });
+  },
+
+  loadFromLocal: (key, callback = null) => {
+    chrome.storage.local.get([key], function(items) {
+      if(!!callback && typeof callback === 'function'){
+        callback(items[key]);
+      }
+    });
+  },
+
   isEmpty: (e) => {
     if (e === undefined || e === null) {
       return true;
@@ -16,9 +35,9 @@ const funcs = {
   whichUpworkPage: (document) => {
     const currentUrl = document.location.href;
     var whichPage = '';
-    Object.keys(Constants.UpworkPages).map((e) => {
-      const page = Constants.UpworkPages[e];
-      if (currentUrl.indexOf(page) !== -1) {
+    Object.keys(Constants.PageUrlPatterns).map((e) => {
+      const page = Constants.PageUrlPatterns[e];
+      if (currentUrl.endsWith(page)) {
         whichPage = page;
       }
     });
@@ -27,13 +46,11 @@ const funcs = {
 
   clickButton: (btn) => {
     btn.then(e => {
-      console.log("btn", e);
     })
   },
 
   isBtn: (e) => {
     if (!funcs.isEmpty(e) && typeof e.click === 'function') {
-      console.log('enable to click!')
       return true;
     } else {
       return false;
@@ -41,39 +58,77 @@ const funcs = {
   },
 
   isInput: (e) => {
-    if (!funcs.isEmpty(e) && typeof e.value === 'string') {
+    if (!funcs.isEmpty(e) && (typeof e.value === 'string'||typeof e.innerHTML === 'string')) {
       return true;
     } else {
       return false;
     }
   },
 
-  selectElement: (document, identifier, index, callback, inputData) => {
-    const observer = new MutationObserver(() => {
-      let elements = document.getElementsByClassName(identifier);
-      if (funcs.isEmpty(elements[index])) {
-        // Element not found yet, continue observing
-        return;
-      }
-      // Stop observing and resolve with the selected element
-      let e = elements[index];
-      console.log('which element', e);
+  selectElement: (document, identifier, index, callback, inputData, isByClassName) => {
+    let findElements;
+    if(isByClassName === true){
+      findElements = document.getElementsByClassName(identifier);
+    } else {
+      findElements = document.querySelectorAll(identifier);
+    }
+    let findElement;
+    if(index == null){
+      findElement = findElements;
+    } else {
+      findElement = findElements[index];
+    }
+    if (funcs.isEmpty(findElement)) {
+      const observer = new MutationObserver(() => {
+        let elements;
+        if(isByClassName === true){
+          elements = document.getElementsByClassName(identifier);
+        } else {
+          elements = document.querySelectorAll(identifier);
+        }
+
+        let element;
+        if(index == null){
+          element = elements;
+        } else {
+          element = elements[index];
+        }
+
+        if (funcs.isEmpty(element)) {
+          callback(null);
+        }
+        // Stop observing and resolve with the selected element
+        if(inputData == null){
+          callback(element);
+        } else {
+          callback(inputData, element);
+        }
+        observer.disconnect();
+      });
+      observer.observe(document, { subtree: true, childList: true });
+    } else {
       if(inputData == null){
-        callback(e);
+        callback(findElement);
       } else {
-        callback(inputData, e);
+        callback(inputData, findElement);
       }
-      observer.disconnect();
-    });
-    observer.observe(document, { subtree: true, childList: true });
+    }
   },
 
-  trySelectElementAndCallback: (document, identifier, index, callback) => {
-    funcs.selectElement(document, identifier, index, callback, null);
+  trySelectElementByClassName: (document, identifier, index, callback) => {
+    funcs.selectElement(document, identifier, index, callback, null, true);
   },
 
-  trySelectElementAndCallbackInput: (document, identifier, index, callback, inputData) => {
-    funcs.selectElement(document, identifier, index, callback, inputData);
+  trySelectElementByClassName: (document, identifier, index, callback, inputData) => {
+    funcs.selectElement(document, identifier, index, callback, inputData, true);
+  },
+  
+  trySelectElementBySelector: (document, identifier, index, callback) => {
+    funcs.selectElement(document, identifier, index, callback, null, false);
+  },
+
+  trySelectElementBySelector: (document, identifier, index, callback, inputData) => {
+    funcs.selectElement(document, identifier, index, callback, inputData, false);
   }
 }
 

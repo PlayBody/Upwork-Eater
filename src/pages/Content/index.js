@@ -11,6 +11,7 @@ console.log('Must reload extension for modifications to take effect.');
 
 printLine("Using the 'printLine' function from the Print Module");
 
+const { PageUrlPatterns, BtnClassNames, OtherControls, Ids } = Constants;
 
 // // Function to handle URL change events
 // function handleURLChange(details) {
@@ -24,91 +25,201 @@ printLine("Using the 'printLine' function from the Print Module");
 // chrome.webNavigation.onCompleted.addListener(handleURLChange);
 
 
-
-const callbackWelcome = (btn) => {
+const callbackBtnClick = (btn) => {
   funcs.isBtn(btn) && btn.click();
-  // setTimeout(() => {
-  //   location.reload();
-  // }, 1000);
-}
-
-
-const callbackExperience = (btn) => {
-  funcs.isBtn(btn) && btn.click();
-  // setTimeout(() => {
-  //   location.reload();
-  // }, 1000);
-}
-
-const callbackMethod = (btn) => {
-  // if (funcs.isBtn(btn) && btn.click()) { funcs.isBtn(btn) && btn.click() };
-  btn.click();
   // setTimeout(() => {
   //   location.reload();
   // }, 1000);
 }
 
 const callbackDataInput = (data, input) => {
-  if (funcs.isInput(input)) { input.value = data;console.log('titleInput', data); }
-  
+  if (funcs.isInput(input)) {
+    input.value = data;
+    setTimeout(() => {
+      input.dispatchEvent(new Event('blur'));
+    }, 100);
+  }
+}
+
+const callbackModelInput = (data, input) => {
+  if (funcs.isInput(input)) {
+    input.value = data;
+    setTimeout(() => {
+      const inputEvent = new Event('input', { bubbles: true });
+      // Dispatch the "input" event on the input field element
+      input.dispatchEvent(inputEvent);
+    }, 100)
+  }
+}
+
+const callbackDateInput = (data, input) => {
+  console.log('inputdata', data, 'element', input);
+  if (funcs.isInput(input)) {
+    input.innerHTML = data;
+    setTimeout(() => {
+      const inputEvent = new Event('input', { bubbles: true });
+      // Dispatch the "input" event on the input field element
+      input.dispatchEvent(inputEvent); 
+    }, 100);
+  }
 }
 
 // window.addEventListener('load', function () {
-  setInterval(async function() {
-  // chrome.storage.local.get(Constant.currentProfile, (e) => {
+setInterval(async function () {
+  chrome.storage.local.get(Constant.currentProfile, (e) => {
+    //   console.log(e.currentProfile.mainSkills)
 
-  //   console.log(e.currentProfile.mainSkills)
+    let flag = 0;
 
-    const findPage = funcs.isUpworkPage(this.document);
-    console.log("find Page", findPage);
-    if (findPage !== -1) {
-      const whPage = funcs.whichUpworkPage(this.document);
-      console.log("which Page", whPage);
-      switch (whPage) {
-        case Constants.UpworkPages.Welcome:
-          console.log("ok welcome:  ", Constants.UpworkPages.Welcome);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.getStart, 0, callbackWelcome);
-          break;
-        case Constants.UpworkPages.Experience:
-          console.log("ok exp:  ", Constants.UpworkPages.Experience);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
-          break;
-        case Constants.UpworkPages.Goal:
-          console.log("ok goal:  ", Constants.UpworkPages.Goal);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
-          break;
-        case Constants.UpworkPages.WorkPreference:
-          console.log("ok prefer:  ", Constants.UpworkPages.WorkPreference);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.skipBtn, 0, callbackExperience);
-          break;
-        case Constants.UpworkPages.ResumeImport:
-          console.log("ok resume:  ", Constants.UpworkPages.ResumeImport);
-          funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.inMethod, 3, callbackMethod);
-          // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
-          // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
-          break;
-        case Constants.UpworkPages.Title:
-          console.log("ok:  ", Constants.UpworkPages.Title);
-          // funcs.trySelectElementAndCallbackInput(this.document, Constants.BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
-          // funcs.trySelectElementAndCallback(this.document, Constants.BtnClassIden.nextBtn, 3, callbackWelcome);
-          break;
-        case Constants.UpworkPages.Employeement:
-
-          break;
-        case Constants.UpworkPages.Education:
-          break;
-        case Constants.UpworkPages.Certificate:
-          //action on 'Certification' page
-          break;
-        case Constants.UpworkPages.Langauges:
-          //action on 'Languages' page
-          break;
-        default: console.log('no Action to do automatically!!!')
+    if (!flag) {
+      // flag = 1;
+      const findPage = funcs.isUpworkPage(this.document);
+      if (findPage) {
+        const whichPage = funcs.whichUpworkPage(this.document);
+        switch (whichPage) {
+          case PageUrlPatterns.SignUp:
+          case PageUrlPatterns.SignUpDest:
+            console.log("ok signUp: ", PageUrlPatterns.SignUp);
+            funcs.loadFromLocal(Ids.signupSelectState, (index) => {
+              if(funcs.isEmpty(index) || index === 0){
+                funcs.saveToLocal(Ids.signupSelectState, 1, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.signUpFreelancerRadio, 0, callbackBtnClick);
+                });
+              } else if(index === 1){
+                funcs.saveToLocal(Ids.signupSelectState, 0, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.applyAsFreelancerBtn, 0, callbackBtnClick);
+                });
+              }
+            });
+            break;
+          case PageUrlPatterns.CreateProfile:
+            console.log("ok create profile:  ", PageUrlPatterns.CreateProfile);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.getStart, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.Welcome:
+            console.log("ok welcome:  ", PageUrlPatterns.Welcome);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.getStart, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.Experience:
+            console.log("ok exp:  ", PageUrlPatterns.Experience);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.Goal:
+            console.log("ok goal:  ", PageUrlPatterns.Goal);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.WorkPreference:
+            console.log("ok prefer:  ", PageUrlPatterns.WorkPreference);
+            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.ResumeImport:
+            console.log("ok resume:  ", PageUrlPatterns.ResumeImport);
+            // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
+            // funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackWelcome);
+            break;
+          case PageUrlPatterns.Title:
+            // console.log("ok: title", UpworkPages.Title);
+            // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
+            // setTimeout(function () {
+            //   funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackBtnClick);
+            // }, 500);
+            // break;
+          case PageUrlPatterns.Employeement:
+            break;
+          case PageUrlPatterns.Education:
+            break;
+          case PageUrlPatterns.Certificate:
+            //action on 'Certification' page
+            break;
+          case PageUrlPatterns.Languages:
+            console.log("ok language:  ", PageUrlPatterns.Languages);
+            funcs.loadFromLocal(Ids.languageComboState, (index) => {
+              if(funcs.isEmpty(index) || index === 0){
+                funcs.trySelectElementBySelector(this.document, OtherControls.languageCombo, 0, (combo) => {
+                  funcs.saveToLocal(Ids.languageComboState, 1, () => {
+                    combo.click();
+                  });
+                });
+                console.log("Languages 1");
+              } else if(index === 1){
+                funcs.trySelectElementBySelector(this.document, OtherControls.languageComboList, 0, (listParent) => {
+                  funcs.saveToLocal(Ids.languageComboState, 2, () => {
+                    console.log("listParent", listParent);
+                    listParent.children[2].click();
+                  });
+                });
+                
+                console.log("Languages 2");
+              } else if(index === 2){
+                funcs.saveToLocal(Ids.languageComboState, 0, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+                });
+                console.log("Languages 3");
+              }
+            });
+            break;
+          case PageUrlPatterns.Skills:  
+            console.log("ok skills:  ", PageUrlPatterns.Skills);
+            funcs.trySelectElementBySelector(this.document, OtherControls.skillsList, 0, (listParent) => {
+              if(listParent && listParent.children && listParent.children.length > 0) {
+                listParent.children[0].click();
+              } else {
+                funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+              }
+            });
+            break;
+          case PageUrlPatterns.Overview:
+            console.log("ok overview:  ", PageUrlPatterns.Overview);
+            break;
+          case PageUrlPatterns.Categories:
+            console.log("ok categories:  ", PageUrlPatterns.Categories);
+            funcs.trySelectElementBySelector(this.document, OtherControls.categoryAddBtns, null, (btns) => {
+              let i = 0;
+              for(i = 0; i<btns.length; i++){
+                let btn = btns[i];
+                if(btn.ariaLabel.indexOf("Development") !== -1){
+                  btn.click();
+                  break;
+                }
+              }
+              if(i === btns.length){
+                funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+              }
+            });
+            break;
+          case PageUrlPatterns.Rate:
+            console.log("ok rate:  ", PageUrlPatterns.Rate);
+            
+            funcs.loadFromLocal(Ids.hourlyInputState, (index) => {
+              if(funcs.isEmpty(index) || index === 0){
+                funcs.saveToLocal(Ids.hourlyInputState, 1, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.inputHourly, 0, callbackDataInput, "$40");
+                });
+              } else if(index === 1){
+                funcs.saveToLocal(Ids.hourlyInputState, 0, () => {
+                  funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+                });
+              }
+            });
+            break;
+          case PageUrlPatterns.Location:
+            console.log("ok location:  ", PageUrlPatterns.Location);
+            break;
+          case PageUrlPatterns.Submit:
+            console.log("ok submit:  ", PageUrlPatterns.Submit);
+            funcs.trySelectElementBySelector(this.document, OtherControls.submitBtn, 0, callbackBtnClick);
+            break;
+          case PageUrlPatterns.Finish:
+            console.log("ok finish:  ", PageUrlPatterns.Finish);
+            funcs.trySelectElementBySelector(this.document, OtherControls.browseJobBtn, 0, callbackBtnClick);
+            break;
+          default: console.log('no Action to do automatically!!!')
+        }
       }
+    } else {
+      return;
     }
-  // });
-
-
-}, 2000);
+  });
+}, 1000);
 // });
 
