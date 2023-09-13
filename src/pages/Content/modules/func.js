@@ -11,6 +11,13 @@ const funcs = {
       })
     });
   },
+  
+  saveToLocalObj: (obj) => {
+    chrome.storage.local.get(null, function(items) {
+      items = {...items, ...obj};
+      chrome.storage.local.set(items, ()=>{})
+    });
+  },
 
   loadFromLocal: (key, callback = null) => {
     chrome.storage.local.get([key], function(items) {

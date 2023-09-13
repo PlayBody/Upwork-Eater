@@ -1,11 +1,11 @@
 {
-  "name": "bids-gpt",
-  "version": "5.0.4",
-  "description": "A chrome extension to help freelance with biding on Upwork",
+  "name": "upwork-signup",
+  "version": "1.0.0",
+  "description": "A chrome extension to sign up on Upwork",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/usmansharif525/upwork-bids-gpt.git"
+    "url": "https://github.com/playbody/UpworkAutoSignup.git"
   },
   "scripts": {
     "build": "node utils/build.js",
@@ -22,6 +22,8 @@
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
+    "@extend-chrome/clipboard": "^2.0.0",
+    "@faker-js/faker": "^8.0.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@types/chrome": "^0.0.202",
     "@types/react": "^18.0.26",
