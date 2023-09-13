@@ -1,15 +1,11 @@
-
-import { printLine } from './modules/print';
 import funcs from './modules/func';
 import Constants from './modules/const';
-// import ActionElements from './modules/element';
-
 import Constant from '../constant';
+
+import { Faker, en, en_US } from '@faker-js/faker';
 
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
-
-printLine("Using the 'printLine' function from the Print Module");
 
 const { PageUrlPatterns, BtnClassNames, OtherControls, Ids } = Constants;
 
@@ -24,45 +20,40 @@ const { PageUrlPatterns, BtnClassNames, OtherControls, Ids } = Constants;
 // // Add a listener for the onCompleted event
 // chrome.webNavigation.onCompleted.addListener(handleURLChange);
 
-
 const callbackBtnClick = (btn) => {
   funcs.isBtn(btn) && btn.click();
-  // setTimeout(() => {
-  //   location.reload();
-  // }, 1000);
-}
+};
+
+const callbackRadioClick = (radio) => {
+  funcs.isBtn(radio) && !radio.checked && radio.click();
+};
 
 const callbackDataInput = (data, input) => {
   if (funcs.isInput(input)) {
     input.value = data;
     setTimeout(() => {
-      input.dispatchEvent(new Event('blur'));
+      const inputEvent = new Event('input', { bubbles: true });
+      input.dispatchEvent(inputEvent);
     }, 100);
   }
-}
+};
 
-const callbackModelInput = (data, input) => {
-  if (funcs.isInput(input)) {
-    input.value = data;
-    setTimeout(() => {
-      const inputEvent = new Event('input', { bubbles: true });
-      // Dispatch the "input" event on the input field element
-      input.dispatchEvent(inputEvent);
-    }, 100)
+const callbackDataInputIfEmpty = (data, input) => {
+  if (input.value === null || input.value.length === 0) {
+    callbackDataInput(data, input);
   }
-}
+};
 
-const callbackDateInput = (data, input) => {
+const callbackHtmlInput = (data, input) => {
   console.log('inputdata', data, 'element', input);
   if (funcs.isInput(input)) {
     input.innerHTML = data;
     setTimeout(() => {
       const inputEvent = new Event('input', { bubbles: true });
-      // Dispatch the "input" event on the input field element
-      input.dispatchEvent(inputEvent); 
+      input.dispatchEvent(inputEvent);
     }, 100);
   }
-}
+};
 
 // window.addEventListener('load', function () {
 setInterval(async function () {
@@ -73,153 +64,413 @@ setInterval(async function () {
 
     if (!flag) {
       // flag = 1;
-      const findPage = funcs.isUpworkPage(this.document);
+      const findPage = funcs.isUpworkPage(document);
       if (findPage) {
-        const whichPage = funcs.whichUpworkPage(this.document);
+        if (document.hasFocus()) {
+          navigator.clipboard
+            .readText()
+            .then(function (clipboardText) {
+              if (clipboardText.indexOf('|') !== -1 && clipboardText.length < 15) {
+                funcs.saveToLocal(Ids.titleContentState, clipboardText);
+              }
+              if(clipboardText.indexOf(">>>") !== -1 && clipboardText.length > 100 && clipboardText.length < 3500){
+                clipboardText = clipboardText.replace(">>>", "");
+                funcs.saveToLocal(Ids.overviewContentState, clipboardText);
+              }
+            })
+            .catch(function (error) {
+              console.error('Error reading clipboard:', error);
+            });
+        }
+        const whichPage = funcs.whichUpworkPage(document);
         switch (whichPage) {
           case PageUrlPatterns.SignUp:
           case PageUrlPatterns.SignUpDest:
-            console.log("ok signUp: ", PageUrlPatterns.SignUp);
+            console.log('ok signUp: ', PageUrlPatterns.SignUp);
             funcs.loadFromLocal(Ids.signupSelectState, (index) => {
-              if(funcs.isEmpty(index) || index === 0){
+              if (funcs.isEmpty(index) || index === 0) {
                 funcs.saveToLocal(Ids.signupSelectState, 1, () => {
-                  funcs.trySelectElementBySelector(this.document, OtherControls.signUpFreelancerRadio, 0, callbackBtnClick);
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.signUpFreelancerRadio,
+                    0,
+                    callbackRadioClick
+                  );
                 });
-              } else if(index === 1){
+              } else if (index === 1) {
                 funcs.saveToLocal(Ids.signupSelectState, 0, () => {
-                  funcs.trySelectElementBySelector(this.document, OtherControls.applyAsFreelancerBtn, 0, callbackBtnClick);
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.applyAsFreelancerBtn,
+                    0,
+                    callbackBtnClick
+                  );
                 });
               }
             });
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.cookieAcceptBtn,
+              0,
+              callbackBtnClick
+            );
+            const customFaker = new Faker({ locale: [en, en_US] });
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.firstNameInput,
+              0,
+              callbackDataInputIfEmpty,
+              customFaker.person.firstName()
+            );
+            setTimeout(() => {
+              funcs.trySelectElementBySelector(
+                document,
+                OtherControls.lastNameInput,
+                0,
+                callbackDataInputIfEmpty,
+                customFaker.person.lastName()
+              );
+              setTimeout(() => {
+                funcs.trySelectElementBySelector(
+                  document,
+                  OtherControls.passwordInput,
+                  0,
+                  callbackDataInputIfEmpty,
+                  customFaker.internet.password()
+                );
+                setTimeout(() => {
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.agreeTerm,
+                    0,
+                    callbackRadioClick
+                  );
+                }, 200);
+              }, 200);
+            }, 200);
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.signupBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.CreateProfile:
-            console.log("ok create profile:  ", PageUrlPatterns.CreateProfile);
-            funcs.trySelectElementByClassName(this.document, BtnClassNames.getStart, 0, callbackBtnClick);
+            console.log('ok create profile:  ', PageUrlPatterns.CreateProfile);
+            funcs.trySelectElementByClassName(
+              document,
+              BtnClassNames.getStart,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Welcome:
-            console.log("ok welcome:  ", PageUrlPatterns.Welcome);
-            funcs.trySelectElementByClassName(this.document, BtnClassNames.getStart, 0, callbackBtnClick);
+            console.log('ok welcome:  ', PageUrlPatterns.Welcome);
+            funcs.trySelectElementByClassName(
+              document,
+              BtnClassNames.getStart,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Experience:
-            console.log("ok exp:  ", PageUrlPatterns.Experience);
-            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            console.log('ok exp:  ', PageUrlPatterns.Experience);
+            funcs.trySelectElementByClassName(
+              document,
+              BtnClassNames.skipBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Goal:
-            console.log("ok goal:  ", PageUrlPatterns.Goal);
-            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            console.log('ok goal:  ', PageUrlPatterns.Goal);
+            funcs.trySelectElementByClassName(
+              document,
+              BtnClassNames.skipBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.WorkPreference:
-            console.log("ok prefer:  ", PageUrlPatterns.WorkPreference);
-            funcs.trySelectElementByClassName(this.document, BtnClassNames.skipBtn, 0, callbackBtnClick);
+            console.log('ok prefer:  ', PageUrlPatterns.WorkPreference);
+            funcs.trySelectElementByClassName(
+              document,
+              BtnClassNames.skipBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.ResumeImport:
-            console.log("ok resume:  ", PageUrlPatterns.ResumeImport);
-            // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, e.currentProfile.mainSkills, callbackDataInput);
-            // funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackWelcome);
+            console.log('ok resume:  ', PageUrlPatterns.ResumeImport);
+            // funcs.trySelectElementBySelector(
+            //   document,
+            //   OtherControls.uploadResumeBtn,
+            //   0,
+            //   callbackBtnClick
+            // );
+            // funcs.trySelectElementBySelector(
+            //   document,
+            //   OtherControls.resumeChooseBtn,
+            //   0,
+            //   callbackBtnClick
+            // );
+            // funcs.trySelectElementBySelector(
+            //   document,
+            //   OtherControls.resumeContinueBtn,
+            //   0,
+            //   callbackBtnClick
+            // );
             break;
           case PageUrlPatterns.Title:
-            // console.log("ok: title", UpworkPages.Title);
-            // funcs.trySelectElementAndCallbackInput(this.document, BtnClassIden.titleIn, 0, callbackDataInput, e.currentProfile.mainSkills);
-            // setTimeout(function () {
-            //   funcs.trySelectElementAndCallback(this.document, BtnClassIden.nextBtn, 3, callbackBtnClick);
-            // }, 500);
-            // break;
+            console.log('ok: title', PageUrlPatterns.Title);
+            funcs.loadFromLocal(Ids.titleContentState, (text) => {
+              if (text.indexOf('|') !== -1) {
+                console.log('clipboard', text);
+                funcs.trySelectElementBySelector(
+                  document,
+                  OtherControls.titleInput,
+                  0,
+                  callbackDataInput,
+                  text
+                );
+                setTimeout(function () {
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.nextBtn,
+                    0,
+                    callbackBtnClick
+                  );
+                }, 500);
+              }
+            });
+            break;
           case PageUrlPatterns.Employeement:
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.nextBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Education:
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.nextBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Certificate:
             //action on 'Certification' page
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.nextBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Languages:
-            console.log("ok language:  ", PageUrlPatterns.Languages);
+            console.log('ok language:  ', PageUrlPatterns.Languages);
             funcs.loadFromLocal(Ids.languageComboState, (index) => {
-              if(funcs.isEmpty(index) || index === 0){
-                funcs.trySelectElementBySelector(this.document, OtherControls.languageCombo, 0, (combo) => {
-                  funcs.saveToLocal(Ids.languageComboState, 1, () => {
-                    combo.click();
-                  });
-                });
-                console.log("Languages 1");
-              } else if(index === 1){
-                funcs.trySelectElementBySelector(this.document, OtherControls.languageComboList, 0, (listParent) => {
-                  funcs.saveToLocal(Ids.languageComboState, 2, () => {
-                    console.log("listParent", listParent);
-                    listParent.children[2].click();
-                  });
-                });
-                
-                console.log("Languages 2");
-              } else if(index === 2){
+              if (funcs.isEmpty(index) || index === 0) {
+                funcs.trySelectElementBySelector(
+                  document,
+                  OtherControls.languageCombo,
+                  0,
+                  (combo) => {
+                    funcs.saveToLocal(Ids.languageComboState, 1, () => {
+                      combo.click();
+                    });
+                  }
+                );
+                console.log('Languages 1');
+              } else if (index === 1) {
+                funcs.trySelectElementBySelector(
+                  document,
+                  OtherControls.languageComboList,
+                  0,
+                  (listParent) => {
+                    funcs.saveToLocal(Ids.languageComboState, 2, () => {
+                      console.log('listParent', listParent);
+                      listParent.children[2].click();
+                    });
+                  }
+                );
+
+                console.log('Languages 2');
+              } else if (index === 2) {
                 funcs.saveToLocal(Ids.languageComboState, 0, () => {
-                  funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.nextBtn,
+                    0,
+                    callbackBtnClick
+                  );
                 });
-                console.log("Languages 3");
+                console.log('Languages 3');
               }
             });
             break;
-          case PageUrlPatterns.Skills:  
-            console.log("ok skills:  ", PageUrlPatterns.Skills);
-            funcs.trySelectElementBySelector(this.document, OtherControls.skillsList, 0, (listParent) => {
-              if(listParent && listParent.children && listParent.children.length > 0) {
-                listParent.children[0].click();
-              } else {
-                funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+          case PageUrlPatterns.Skills:
+            console.log('ok skills:  ', PageUrlPatterns.Skills);
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.skillsList,
+              0,
+              (listParent) => {
+                funcs.loadFromLocal(Ids.skillCountState, (count) => {
+                  if (
+                    !(typeof count === 'number' && count > 7) &&
+                    listParent &&
+                    listParent.children &&
+                    listParent.children.length > 0
+                  ) {
+                    let c = 0;
+                    if (typeof count === 'number') {
+                      c = count + 1;
+                    }
+                    funcs.saveToLocal(Ids.skillCountState, c, () => {
+                      listParent.children[0].click();
+                    });
+                  } else {
+                    funcs.saveToLocal(Ids.skillCountState, 0, () => {
+                      funcs.trySelectElementBySelector(
+                        document,
+                        OtherControls.nextBtn,
+                        0,
+                        callbackBtnClick
+                      );
+                    });
+                  }
+                });
               }
-            });
+            );
             break;
           case PageUrlPatterns.Overview:
-            console.log("ok overview:  ", PageUrlPatterns.Overview);
-            break;
-          case PageUrlPatterns.Categories:
-            console.log("ok categories:  ", PageUrlPatterns.Categories);
-            funcs.trySelectElementBySelector(this.document, OtherControls.categoryAddBtns, null, (btns) => {
-              let i = 0;
-              for(i = 0; i<btns.length; i++){
-                let btn = btns[i];
-                if(btn.ariaLabel.indexOf("Development") !== -1){
-                  btn.click();
-                  break;
-                }
-              }
-              if(i === btns.length){
-                funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+            console.log('ok overview:  ', PageUrlPatterns.Overview);
+            funcs.loadFromLocal(Ids.overviewContentState, (text)=>{
+              if(!funcs.isEmpty(text) && text.length > 100){
+                funcs.trySelectElementBySelector(document, OtherControls.overviewTextArea, 0, callbackDataInput, text);
+                setTimeout(()=>{
+                  funcs.trySelectElementBySelector(document, OtherControls.nextBtn, 0, callbackBtnClick);
+                }, 1000);
               }
             });
             break;
+          case PageUrlPatterns.Categories:
+            console.log('ok categories:  ', PageUrlPatterns.Categories);
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.categoryAddBtns,
+              null,
+              (btns) => {
+                let i = 0;
+                for (i = 0; i < btns.length; i++) {
+                  let btn = btns[i];
+                  if (btn.ariaLabel.indexOf('Development') !== -1) {
+                    btn.click();
+                    break;
+                  }
+                }
+                if (i === btns.length) {
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.nextBtn,
+                    0,
+                    callbackBtnClick
+                  );
+                }
+              }
+            );
+            break;
           case PageUrlPatterns.Rate:
-            console.log("ok rate:  ", PageUrlPatterns.Rate);
-            
+            console.log('ok rate:  ', PageUrlPatterns.Rate);
             funcs.loadFromLocal(Ids.hourlyInputState, (index) => {
-              if(funcs.isEmpty(index) || index === 0){
+              if (funcs.isEmpty(index) || index === 0) {
                 funcs.saveToLocal(Ids.hourlyInputState, 1, () => {
-                  funcs.trySelectElementBySelector(this.document, OtherControls.inputHourly, 0, callbackDataInput, "$40");
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.inputHourly,
+                    0,
+                    callbackDataInput,
+                    '35'
+                  );
                 });
-              } else if(index === 1){
+              } else if (index === 1) {
                 funcs.saveToLocal(Ids.hourlyInputState, 0, () => {
-                  funcs.trySelectElementBySelector(this.document, OtherControls.nextBtn, 0, callbackBtnClick);
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.nextBtn,
+                    0,
+                    callbackBtnClick
+                  );
                 });
               }
             });
             break;
           case PageUrlPatterns.Location:
-            console.log("ok location:  ", PageUrlPatterns.Location);
+            console.log('ok location:  ', PageUrlPatterns.Location);
+            const faker = new Faker({ locale: [en, en_US] });
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.phoneNumberInput,
+              0,
+              callbackDataInputIfEmpty,
+              faker.phone.number()
+            );
+            
+            setTimeout(() => {
+              funcs.trySelectElementBySelector(
+                document,
+                OtherControls.zipCodeInput,
+                0,
+                callbackDataInputIfEmpty,
+                faker.location.zipCode()
+              );
+              setTimeout(() => {
+                funcs.trySelectElementBySelector(
+                  document,
+                  OtherControls.streetAddressInput,
+                  0,
+                  callbackDataInputIfEmpty,
+                  faker.location.streetAddress(false)
+                );
+                setTimeout(() => {
+                  funcs.trySelectElementBySelector(
+                    document,
+                    OtherControls.nextBtn,
+                    0,
+                    callbackBtnClick
+                  );
+                }, 300);
+              }, 300);
+            }, 300);
             break;
           case PageUrlPatterns.Submit:
-            console.log("ok submit:  ", PageUrlPatterns.Submit);
-            funcs.trySelectElementBySelector(this.document, OtherControls.submitBtn, 0, callbackBtnClick);
+            console.log('ok submit:  ', PageUrlPatterns.Submit);
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.submitBtn,
+              0,
+              callbackBtnClick
+            );
             break;
           case PageUrlPatterns.Finish:
-            console.log("ok finish:  ", PageUrlPatterns.Finish);
-            funcs.trySelectElementBySelector(this.document, OtherControls.browseJobBtn, 0, callbackBtnClick);
+            console.log('ok finish:  ', PageUrlPatterns.Finish);
+            funcs.trySelectElementBySelector(
+              document,
+              OtherControls.browseJobBtn,
+              0,
+              callbackBtnClick
+            );
             break;
-          default: console.log('no Action to do automatically!!!')
+          default:
+            console.log('no Action to do automatically!!!');
         }
       }
     } else {
       return;
     }
   });
-}, 1000);
+}, 2222);
 // });
-
