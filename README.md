@@ -1,20 +1,28 @@
 <img src="src/assets/img/icon-128.png" width="64"/>
 
-# Chrome Extension (MV3) Boilerplate with React 18 and Webpack 5
+# Chrome Extension Auto Sign up on Upwork.com
 
 [![npm](https://img.shields.io/npm/v/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
 [![npm-download](https://img.shields.io/npm/dw/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
 [![npm](https://img.shields.io/npm/dm/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
 
-## Announcements
 
-- Recently updated from **[React](https://reactjs.org)** ~~17~~ to **18**!
-- **_This boilerplate adopts [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-overview/)!_**
-  - For V2 users, please check out the [manifest-v2](https://github.com/lxieyang/chrome-extension-boilerplate-react/tree/manifest-v2) branch, or use version [3.x](https://www.npmjs.com/package/chrome-extension-boilerplate-react/v/3.3.0).
-  - Check out the [Manifest V3 Migration Guide](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/).
-- Recently added [devtools](https://developer.chrome.com/docs/extensions/mv3/devtools/) Support! Thanks [GeekaholicLin](https://github.com/lxieyang/chrome-extension-boilerplate-react/issues/17)!
-- Recently updated from **[Webpack Dev Server](https://webpack.js.org/configuration/dev-server/)** ~~3.x~~ to **4.x** and **[Webpack](https://webpack.js.org/)** ~~4~~ to **5**!
-- Recently added [TypeScript](https://www.typescriptlang.org/) Support!
+## How to use
+
+- You have to do manual action with email verify, upload resume, upload avatar image.
+- You have to give clipboard access permition to chrome browser.
+- After copy json input string then you have to focus to browser at once.
+```json
+{
+  "title": "OpenCV | AI | Python",
+  "overview": "
+As a professional web development freelancer, I specialize in creating dynamic and visually appealing websites that are tailored to meet the unique needs of my clients. With a strong background in web technologies and a passion for delivering high-quality results, I strive to exceed expectations and provide exceptional value.
+
+My expertise lies in front-end development, where I excel in crafting intuitive user interfaces using HTML, CSS, and JavaScript. I have a deep understanding of responsive design principles, ensuring that websites I create are optimized for various devices and screen sizes. Additionally, I am proficient in popular front-end frameworks such as React, Angular, or Vue.js, enabling me to build interactive and feature-rich web applications.",
+  "skills": "Java Spring OpenCV AI Node C++"
+}
+``` 
+- For Injo...
 
 ## Features
 
@@ -105,10 +113,6 @@ and on your `src/manifest.json`:
 }
 ```
 
-## Intelligent Code Completion
-
-Thanks to [@hudidit](https://github.com/lxieyang/chrome-extension-boilerplate-react/issues/4)'s kind suggestions, this boilerplate supports chrome-specific intelligent code completion using [@types/chrome](https://www.npmjs.com/package/@types/chrome).
-
 ## Packing
 
 After the development of your extension run the command
@@ -147,4 +151,3 @@ ApiCall({ key: secrets.key });
 
 ---
 
-Michael Xieyang Liu | [Website](https://lxieyang.github.io)
