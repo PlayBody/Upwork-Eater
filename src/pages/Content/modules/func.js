@@ -1,6 +1,6 @@
 import Constants from "./const";
 
-const debug = true;
+const debug = false;
 
 const funcs = {
   log: (message, ...params) => {
