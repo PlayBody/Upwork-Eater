@@ -35,11 +35,19 @@ const funcs = {
   },
 
   loadFromLocal: (key, callback = null) => {
-    chrome.storage.local.get([key], function(items) {
-      if(!!callback && typeof callback === 'function'){
+    if(!!callback && typeof callback === 'function'){
+      chrome.storage.local.get([key], function(items) {
         callback(items[key]);
-      }
-    });
+      });
+    }
+  },
+
+  loadFromLocalObj: (keys, callback = null) => {
+    if(!!callback && typeof callback === 'function'){
+      chrome.storage.local.get(keys, function(items) {
+        callback(items);
+      });
+    }
   },
 
   isEmpty: (e) => {

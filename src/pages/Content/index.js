@@ -167,51 +167,53 @@ setInterval(async function () {
               callbackBtnClick
             );
             const customFaker = new Faker({ locale: [en, en_US] });
-            funcs.loadFromLocal(Ids.firstName, (firstName) => {
-              const fname = firstName;
-              if(funcs.isEmpty(firstName)){
-                fname = customFaker.person.firstName();
-              }
-              funcs.trySelectElementBySelector(
-                document,
-                Controls.firstNameInput,
-                0,
-                callbackDataInputIfEmpty,
-                fname
-              );
-            });
-            setTimeout(() => {
-              funcs.loadFromLocal(Ids.lastName, (lastName) => {
-                const lname = lastName;
-                if(funcs.isEmpty(lastName)){
-                  lname = customFaker.person.lastName();
+            setTimeout(()=>{
+              funcs.loadFromLocalObj([Ids.firstName, Ids.lastName], (names) => {
+                const fname = names.firstName;
+                if(funcs.isEmpty(names.firstName)){
+                  fname = customFaker.person.firstName();
                 }
                 funcs.trySelectElementBySelector(
                   document,
-                  Controls.lastNameInput,
+                  Controls.firstNameInput,
                   0,
                   callbackDataInputIfEmpty,
-                  lname
+                  fname
                 );
-              });
-              setTimeout(() => {
-                funcs.trySelectElementBySelector(
-                  document,
-                  Controls.passwordInput,
-                  0,
-                  callbackDataInputIfEmpty,
-                  customFaker.internet.password()
-                );
-                setTimeout(() => {
+                setTimeout(()=>{
+                  const lname = names.lastName;
+                  if(funcs.isEmpty(names.lastName)){
+                    lname = customFaker.person.lastName();
+                  }
                   funcs.trySelectElementBySelector(
                     document,
-                    Controls.agreeTerm,
+                    Controls.lastNameInput,
                     0,
-                    callbackRadioClick
+                    callbackDataInputIfEmpty,
+                    lname
                   );
+                }, 100);
+                setTimeout(() => {
+                  setTimeout(() => {
+                    funcs.trySelectElementBySelector(
+                      document,
+                      Controls.passwordInput,
+                      0,
+                      callbackDataInputIfEmpty,
+                      customFaker.internet.password()
+                    );
+                    setTimeout(() => {
+                      funcs.trySelectElementBySelector(
+                        document,
+                        Controls.agreeTerm,
+                        0,
+                        callbackRadioClick
+                      );
+                    }, 200);
+                  }, 200);
                 }, 200);
-              }, 200);
-            }, 200);
+              });
+            }, 150);
             setTimeout(() => {
               funcs.trySelectElementBySelector(
                 document,
