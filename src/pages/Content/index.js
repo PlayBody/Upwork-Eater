@@ -557,7 +557,7 @@ setInterval(async function () {
           case PageUrlPatterns.Location:
             console.log('ok location:  ', PageUrlPatterns.Location);
             const faker = new Faker({ locale: [en, en_US] });
-            const number = faker.phone.number();
+            const number = faker.phone.number().replace("-", "");
             funcs.trySelectElementBySelector(
               document,
               Controls.phoneNumberInput,
