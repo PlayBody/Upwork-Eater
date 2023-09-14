@@ -1,6 +1,16 @@
 import Constants from "./const";
 
 const funcs = {
+  getRandomPhoneNumbers: () => {
+    let randomNumber = Math.floor(Math.random() * 100000000);
+    let numberString = randomNumber.toString().padStart(8, '0');
+    return numberString;
+  },
+  getRandomZipCode: () => {
+    let randomNumber = Math.floor(Math.random() * 100000);
+    let numberString = randomNumber.toString().padStart(5, '0');
+    return numberString;
+  },
   saveToLocal: (key, value, callback = null) => {
     chrome.storage.local.get(null, function(items) {
       items[key] = value;

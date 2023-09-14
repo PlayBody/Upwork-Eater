@@ -2,7 +2,7 @@ import funcs from './modules/func';
 import Constants from './modules/const';
 import Constant from '../constant';
 
-import { Faker, en, en_US } from '@faker-js/faker';
+import { Faker, en, en_US, fa } from '@faker-js/faker';
 
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
@@ -584,39 +584,48 @@ setInterval(async function () {
           case PageUrlPatterns.Location:
             console.log('ok location:  ', PageUrlPatterns.Location);
             const faker = new Faker({ locale: [en, en_US] });
-            const number = faker.phone.number().replace("-", "");
-            funcs.trySelectElementBySelector(
-              document,
-              Controls.phoneNumberInput,
-              0,
-              callbackDataInputIfEmpty,
-              number.substring(0, Math.min(8, number.length))
-            );
-
-            setTimeout(() => {
+            funcs.loadFromLocal(Ids.phoneNumber, (phoneNumber) => {
+              let number = phoneNumber;
+              if(isEmpty(phoneNumber)){
+                number = funcs.getRandomPhoneNumbers();
+              }
               funcs.trySelectElementBySelector(
                 document,
-                Controls.zipCodeInput,
+                Controls.phoneNumberInput,
                 0,
                 callbackDataInputIfEmpty,
-                faker.location.zipCode()
+                funcs.getRandomPhoneNumbers()
               );
-              setTimeout(() => {
+            })
+            setTimeout(() => {
+              funcs.loadFromLocal(Ids.zipCode, (zipCode) => {
+                let zip = zipCode;
+                if(isEmpty(zipCode)){
+                  zip = funcs.getRandomZipCode();
+                }
                 funcs.trySelectElementBySelector(
                   document,
-                  Controls.streetAddressInput,
+                  Controls.zipCodeInput,
                   0,
                   callbackDataInputIfEmpty,
-                  faker.location.streetAddress(false)
+                  funcs.getRandomZipCode()
                 );
-                // setTimeout(() => {
-                //   funcs.trySelectElementBySelector(
-                //     document,
-                //     Controls.nextBtn,
-                //     0,
-                //     callbackBtnClick
-                //   );
-                // }, 300);
+              })
+
+              setTimeout(() => {                
+                funcs.loadFromLocal(Ids.address, (address) => {
+                  let add = address;
+                  if(isEmpty(address)){
+                    add = faker.location.streetAddress();
+                  }
+                  funcs.trySelectElementBySelector(
+                    document,
+                    Controls.streetAddressInput,
+                    0,
+                    callbackDataInputIfEmpty,
+                    add
+                  );
+                })
               }, 300);
             }, 300);
             break;
