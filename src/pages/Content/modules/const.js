@@ -74,6 +74,9 @@ const Constants = {
     phoneNumberInput: 'input[type="tel"][inputmode="numeric"]',
     zipCodeInput: 'input[data-qa="zip"][aria-labelledby="postal-code-label"]',
     streetAddressInput: 'input[aria-labelledby="street-label"][type="text"]',
+    cityInput: 'input[aria-labelledby="city-label"][type="search"]',
+    cityOther: 'input[aria-labelledby="state-label"][type="text"]',
+    cityFirstItem: 'li[role="option"][class="is-uncheckable air3-menu-item"]',
   },
   Ids: {
     firstName: "firstName",

@@ -1,6 +1,11 @@
 import Constants from "./const";
 
+const debug = true;
+
 const funcs = {
+  log: (message, ...params) => {
+    debug && console.log(message, ...params);
+  },
   getRandomPhoneNumbers: () => {
     let randomNumber = Math.floor(Math.random() * 100000000);
     let numberString = randomNumber.toString().padStart(8, '0');

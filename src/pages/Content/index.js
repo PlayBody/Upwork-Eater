@@ -4,8 +4,8 @@ import Constant from '../constant';
 
 import { Faker, en, en_US, fa } from '@faker-js/faker';
 
-console.log('Content script works!');
-console.log('Must reload extension for modifications to take effect.');
+funcs.log('Content script works!');
+funcs.log('Must reload extension for modifications to take effect.');
 
 const {
   PageUrlPatterns,
@@ -24,25 +24,34 @@ const callbackRadioClick = (radio) => {
   }
 };
 
-const callbackDataInput = (data, input) => {
+const callbackDataInputRelease = (data, input) => {
   if (funcs.isInput(input)) {
     input.click();
     input.value = data;
-    setTimeout(() => {
-      const inputEvent = new Event('input', { bubbles: true });
-      input.dispatchEvent(inputEvent);
-    }, 100);
+    const inputEvent = new Event('input', { bubbles: true });
+    const blurEvent = new Event('blur', { bubbles: true });
+    input.dispatchEvent(inputEvent);
+    input.dispatchEvent(blurEvent);
+  }
+};
+
+const callbackDataInputFocus = (data, input) => {
+  if (funcs.isInput(input)) {
+    input.click();
+    input.value = data;
+    const inputEvent = new Event('input', { bubbles: true });
+    input.dispatchEvent(inputEvent);
   }
 };
 
 const callbackDataInputIfEmpty = (data, input) => {
   if (input.value === null || input.value.length === 0) {
-    callbackDataInput(data, input);
+    callbackDataInputRelease(data, input);
   }
 };
 
 const callbackHtmlInput = (data, input) => {
-  console.log('inputdata', data, 'element', input);
+  funcs.log('inputdata', data, 'element', input);
   if (funcs.isInput(input)) {
     input.innerHTML = data;
     setTimeout(() => {
@@ -55,12 +64,13 @@ const callbackHtmlInput = (data, input) => {
 const working = {
   clipboard: "",
   countryCombo: false,
+  cityCombo: 0,
 }
 
 // window.addEventListener('load', function () {
 setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
-    //   console.log(e.currentProfile.mainSkills)
+    //   funcs.log(e.currentProfile.mainSkills)
     let flag = 0;
     if (!flag) {
       // flag = 1;
@@ -82,17 +92,17 @@ setInterval(async function () {
                   funcs.isEmpty(obj.skills)
                 ) {
                   if (!funcs.isEmpty(obj.noSkill) && obj.noSkill === true) {
-                    console.log(obj);
+                    funcs.log(obj);
                     funcs.saveToLocalObj(obj);
                   }
                 } else {
                   obj.noSkill = false;
-                  console.log(obj);
+                  funcs.log(obj);
                   funcs.saveToLocalObj(obj);
                 }
               } catch {
                 (e) => {
-                  console.log(e);
+                  funcs.log(e);
                 };
               }
             })
@@ -104,7 +114,7 @@ setInterval(async function () {
         switch (whichPage) {
           case PageUrlPatterns.SignUp:
           case PageUrlPatterns.SignUpDest:
-            console.log('ok signUp: ', PageUrlPatterns.SignUp, working.countryCombo);            
+            funcs.log('ok signUp: ', PageUrlPatterns.SignUp, working.countryCombo);            
             funcs.loadFromLocal(Ids.signupSelectState, (index) => {
               if (funcs.isEmpty(index) || index === 0) {
                 funcs.saveToLocal(Ids.signupSelectState, 1, () => {
@@ -136,19 +146,14 @@ setInterval(async function () {
                         combo.click();
                         setTimeout(()=>{
                           funcs.trySelectElementBySelector(document, Controls.countrySearchInput, 0, (input)=>{
-                            callbackDataInput(country, input);
+                            callbackDataInputFocus(country, input);
                             setTimeout(()=>{
                               funcs.trySelectElementBySelector(document, Controls.countryFirstItem, 0, (btn)=>{
                                 callbackBtnClick(btn);
-                                setTimeout(()=>{
-                                  working.countryCombo = false;
-                                }, 1000);
                               });
                             }, 1500);
                           })
                         }, 2500);
-                      } else {
-                        working.countryCombo = false;
                       }
                     });
                   }
@@ -226,7 +231,7 @@ setInterval(async function () {
             }, 100);
             break;
           case PageUrlPatterns.CreateProfile:
-            console.log('ok create profile:  ', PageUrlPatterns.CreateProfile);
+            funcs.log('ok create profile:  ', PageUrlPatterns.CreateProfile);
             funcs.trySelectElementByClassName(
               document,
               BtnClassNames.getStart,
@@ -235,7 +240,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.Welcome:
-            console.log('ok welcome:  ', PageUrlPatterns.Welcome);
+            funcs.log('ok welcome:  ', PageUrlPatterns.Welcome);
             funcs.trySelectElementByClassName(
               document,
               BtnClassNames.getStart,
@@ -244,7 +249,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.Experience:
-            console.log('ok exp:  ', PageUrlPatterns.Experience);
+            funcs.log('ok exp:  ', PageUrlPatterns.Experience);
             funcs.trySelectElementByClassName(
               document,
               BtnClassNames.skipBtn,
@@ -253,7 +258,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.Goal:
-            console.log('ok goal:  ', PageUrlPatterns.Goal);
+            funcs.log('ok goal:  ', PageUrlPatterns.Goal);
             funcs.trySelectElementByClassName(
               document,
               BtnClassNames.skipBtn,
@@ -262,7 +267,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.WorkPreference:
-            console.log('ok prefer:  ', PageUrlPatterns.WorkPreference);
+            funcs.log('ok prefer:  ', PageUrlPatterns.WorkPreference);
             funcs.trySelectElementByClassName(
               document,
               BtnClassNames.skipBtn,
@@ -271,7 +276,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.ResumeImport:
-            console.log('ok resume:  ', PageUrlPatterns.ResumeImport);
+            funcs.log('ok resume:  ', PageUrlPatterns.ResumeImport);
             funcs.loadFromLocal(Ids.resumeImportState, (index) => {
               if (funcs.isEmpty(index) || index === 0) {
                 funcs.trySelectElementBySelector(
@@ -284,7 +289,7 @@ setInterval(async function () {
                     });
                   }
                 );
-                console.log('Resume 1');
+                funcs.log('Resume 1');
               } else if (index === 1) {
                 setTimeout(() => {
                   funcs.trySelectElementBySelector(
@@ -303,7 +308,7 @@ setInterval(async function () {
                     }
                   );
                 }, 500);
-                console.log('Resume 2');
+                funcs.log('Resume 2');
               } else if (index === 2) {
                 funcs.trySelectElementBySelector(
                   document,
@@ -319,20 +324,20 @@ setInterval(async function () {
                     }
                   }
                 );
-                console.log('Resume 3');
+                funcs.log('Resume 3');
               }
             });
             break;
           case PageUrlPatterns.Title:
-            console.log('ok: title', PageUrlPatterns.Title);
+            funcs.log('ok: title', PageUrlPatterns.Title);
             funcs.loadFromLocal(Ids.title, (text) => {
               if (typeof text === 'string' && text.indexOf('|') !== -1) {
-                console.log('clipboard', text);
+                funcs.log('clipboard', text);
                 funcs.trySelectElementBySelector(
                   document,
                   Controls.titleInput,
                   0,
-                  callbackDataInput,
+                  callbackDataInputRelease,
                   text
                 );
                 setTimeout(function () {
@@ -372,7 +377,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.Languages:
-            console.log('ok language:  ', PageUrlPatterns.Languages);
+            funcs.log('ok language:  ', PageUrlPatterns.Languages);
             funcs.loadFromLocal(Ids.languageComboState, (index) => {
               if (funcs.isEmpty(index) || index === 0) {
                 funcs.trySelectElementBySelector(
@@ -385,7 +390,7 @@ setInterval(async function () {
                     });
                   }
                 );
-                console.log('Languages 1');
+                funcs.log('Languages 1');
               } else if (index === 1) {
                 funcs.trySelectElementBySelector(
                   document,
@@ -393,13 +398,13 @@ setInterval(async function () {
                   0,
                   (listParent) => {
                     funcs.saveToLocal(Ids.languageComboState, 2, () => {
-                      console.log('listParent', listParent);
+                      funcs.log('listParent', listParent);
                       listParent.children[2].click();
                     });
                   }
                 );
 
-                console.log('Languages 2');
+                funcs.log('Languages 2');
               } else if (index === 2) {
                 funcs.saveToLocal(Ids.languageComboState, 0, () => {
                   funcs.trySelectElementBySelector(
@@ -409,19 +414,17 @@ setInterval(async function () {
                     callbackBtnClick
                   );
                 });
-                console.log('Languages 3');
+                funcs.log('Languages 3');
               }
             });
             break;
           case PageUrlPatterns.Skills:
-            console.log('ok skills:  ', PageUrlPatterns.Skills);
+            funcs.log('ok skills:  ', PageUrlPatterns.Skills);
             // parse from json
             funcs.loadFromLocal(Ids.skillsUse, (skills) => {
-              //const skills = skillsString.split(" ");
-              // console.log('SKILLS', skills);
               if (funcs.isEmpty(skills) || skills.length == 0) {
                 funcs.loadFromLocal(Ids.skills, (skillsAll) => {
-                  funcs.saveToLocal(Ids.skillsUse, skillsAll.split(','), () => {
+                  funcs.saveToLocal(Ids.skillsUse, skillsAll.split('|'), () => {
                     setTimeout(() => {
                       funcs.trySelectElementBySelector(
                         document,
@@ -460,7 +463,7 @@ setInterval(async function () {
                         document,
                         Controls.skillsInput,
                         0,
-                        callbackDataInput,
+                        callbackDataInputRelease,
                         skills[0]
                       );
                     }
@@ -507,14 +510,14 @@ setInterval(async function () {
             });
             break;
           case PageUrlPatterns.Overview:
-            console.log('ok overview:  ', PageUrlPatterns.Overview);
+            funcs.log('ok overview:  ', PageUrlPatterns.Overview);
             funcs.loadFromLocal(Ids.overview, (text) => {
               if (!funcs.isEmpty(text) && text.length > 100) {
                 funcs.trySelectElementBySelector(
                   document,
                   Controls.overviewTextArea,
                   0,
-                  callbackDataInput,
+                  callbackDataInputRelease,
                   text
                 );
                 setTimeout(() => {
@@ -529,7 +532,7 @@ setInterval(async function () {
             });
             break;
           case PageUrlPatterns.Categories:
-            console.log('ok categories:  ', PageUrlPatterns.Categories);
+            funcs.log('ok categories:  ', PageUrlPatterns.Categories);
             funcs.trySelectElementBySelector(
               document,
               Controls.categoryAddBtns,
@@ -545,19 +548,21 @@ setInterval(async function () {
                     break;
                   }
                 }
-                if (breaked) {
-                  funcs.trySelectElementBySelector(
-                    document,
-                    Controls.nextBtn,
-                    0,
-                    callbackBtnClick
-                  );
+                if (!breaked) {
+                  setTimeout(()=>{
+                    funcs.trySelectElementBySelector(
+                      document,
+                      Controls.nextBtn,
+                      0,
+                      callbackBtnClick
+                    );
+                  }, 1000);
                 }
               }
             );
             break;
           case PageUrlPatterns.Rate:
-            console.log('ok rate:  ', PageUrlPatterns.Rate);
+            funcs.log('ok rate:  ', PageUrlPatterns.Rate);
             funcs.loadFromLocal(Ids.hourlyInputState, (index) => {
               if (funcs.isEmpty(index) || index === 0) {
                 funcs.saveToLocal(Ids.hourlyInputState, 1, () => {
@@ -565,7 +570,7 @@ setInterval(async function () {
                     document,
                     Controls.inputHourly,
                     0,
-                    callbackDataInput,
+                    callbackDataInputRelease,
                     '35'
                   );
                 });
@@ -582,11 +587,11 @@ setInterval(async function () {
             });
             break;
           case PageUrlPatterns.Location:
-            console.log('ok location:  ', PageUrlPatterns.Location);
+            funcs.log('ok location:  ', PageUrlPatterns.Location);
             const faker = new Faker({ locale: [en, en_US] });
             funcs.loadFromLocal(Ids.phoneNumber, (phoneNumber) => {
               let number = phoneNumber;
-              if(isEmpty(phoneNumber)){
+              if(funcs.isEmpty(phoneNumber)){
                 number = funcs.getRandomPhoneNumbers();
               }
               funcs.trySelectElementBySelector(
@@ -594,13 +599,13 @@ setInterval(async function () {
                 Controls.phoneNumberInput,
                 0,
                 callbackDataInputIfEmpty,
-                funcs.getRandomPhoneNumbers()
+                number
               );
             })
             setTimeout(() => {
               funcs.loadFromLocal(Ids.zipCode, (zipCode) => {
                 let zip = zipCode;
-                if(isEmpty(zipCode)){
+                if(funcs.isEmpty(zipCode)){
                   zip = funcs.getRandomZipCode();
                 }
                 funcs.trySelectElementBySelector(
@@ -608,29 +613,56 @@ setInterval(async function () {
                   Controls.zipCodeInput,
                   0,
                   callbackDataInputIfEmpty,
-                  funcs.getRandomZipCode()
+                  zip
                 );
               })
 
               setTimeout(() => {                
                 funcs.loadFromLocal(Ids.address, (address) => {
-                  let add = address;
-                  if(isEmpty(address)){
-                    add = faker.location.streetAddress();
+                  let addr = address;
+                  if(funcs.isEmpty(address)){
+                    addr = faker.location.streetAddress();
                   }
                   funcs.trySelectElementBySelector(
                     document,
                     Controls.streetAddressInput,
                     0,
                     callbackDataInputIfEmpty,
-                    add
+                    addr
                   );
                 })
               }, 300);
             }, 300);
+            funcs.loadFromLocal(Ids.city, (city)=>{
+              if(funcs.isEmpty(city)){
+                c = String.fromCharCode(Math.floor(Math.random()*10) + 'A'.charCodeAt(0));
+                funcs.saveToLocal(Ids.city, c);
+              } else {
+                funcs.trySelectElementBySelector(document, Controls.cityOther, 0, (other)=>{
+                  if(funcs.isInput(other) && other.value.length === 0){
+                    funcs.trySelectElementBySelector(document, Controls.cityInput, 0, (input)=>{
+                      if (funcs.isInput(input)) {
+                        if(input.value && input.value.includes(city)){
+                          working.cityCombo++;
+                          if(working.cityCombo < 5){
+                            return;
+                          } else {
+                            working.cityCombo = 0;
+                          }
+                        }
+                        callbackDataInputFocus(city, input);
+                        setTimeout(()=>{
+                          funcs.trySelectElementBySelector(document, Controls.cityFirstItem, 0, callbackBtnClick);
+                        }, 3500);
+                      }
+                    });
+                  }
+                })
+              }
+            })
             break;
           case PageUrlPatterns.Submit:
-            console.log('ok submit:  ', PageUrlPatterns.Submit);
+            funcs.log('ok submit:  ', PageUrlPatterns.Submit);
             funcs.trySelectElementBySelector(
               document,
               Controls.submitBtn,
@@ -639,7 +671,7 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.Finish:
-            console.log('ok finish:  ', PageUrlPatterns.Finish);
+            funcs.log('ok finish:  ', PageUrlPatterns.Finish);
             funcs.trySelectElementBySelector(
               document,
               Controls.browseJobBtn,
@@ -648,7 +680,7 @@ setInterval(async function () {
             );
             break;
           default:
-            console.log('no Action to do automatically!!!');
+            funcs.log('no Action to do automatically!!!');
         }
       }
     } else {
