@@ -10,20 +10,9 @@ console.log('Must reload extension for modifications to take effect.');
 const {
   PageUrlPatterns,
   BtnClassNames,
-  OtherControls: Controls,
+  Controls,
   Ids,
 } = Constants;
-
-// // Function to handle URL change events
-// function handleURLChange(details) {
-//   console.log("URL changed:", details.url);
-
-//   // Do something with the new URL
-//   // Your code logic here...
-// }
-
-// // Add a listener for the onCompleted event
-// chrome.webNavigation.onCompleted.addListener(handleURLChange);
 
 const callbackBtnClick = (btn) => {
   funcs.isBtn(btn) && btn.click();
@@ -63,6 +52,11 @@ const callbackHtmlInput = (data, input) => {
   }
 };
 
+const working = {
+  clipboard: "",
+  countryCombo: false,
+}
+
 // window.addEventListener('load', function () {
 setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
@@ -77,6 +71,10 @@ setInterval(async function () {
             .readText()
             .then(function (clipboardText) {
               try {
+                if(working.clipboard === clipboardText){
+                  return;
+                }
+                working.clipboard = clipboardText;
                 const obj = JSON.parse(clipboardText);
                 if (
                   funcs.isEmpty(obj.title) ||
@@ -106,7 +104,7 @@ setInterval(async function () {
         switch (whichPage) {
           case PageUrlPatterns.SignUp:
           case PageUrlPatterns.SignUpDest:
-            console.log('ok signUp: ', PageUrlPatterns.SignUp);
+            console.log('ok signUp: ', PageUrlPatterns.SignUp, working.countryCombo);            
             funcs.loadFromLocal(Ids.signupSelectState, (index) => {
               if (funcs.isEmpty(index) || index === 0) {
                 funcs.saveToLocal(Ids.signupSelectState, 1, () => {
@@ -125,6 +123,35 @@ setInterval(async function () {
                     0,
                     callbackBtnClick
                   );
+                });
+              }
+            });
+            funcs.loadFromLocal(Ids.country, (country) => {
+              if(!funcs.isEmpty(country) && country.length){
+                funcs.trySelectElementBySelector(document, Controls.countrySpan, 0, (span)=>{
+                  if(!funcs.isEmpty(span) && !span.innerHTML.includes(country) && working.countryCombo === false){
+                    working.countryCombo = true;
+                    funcs.trySelectElementBySelector(document, Controls.countryCombo, 0, (combo)=>{
+                      if(combo){
+                        combo.click();
+                        setTimeout(()=>{
+                          funcs.trySelectElementBySelector(document, Controls.countrySearchInput, 0, (input)=>{
+                            callbackDataInput(country, input);
+                            setTimeout(()=>{
+                              funcs.trySelectElementBySelector(document, Controls.countryFirstItem, 0, (btn)=>{
+                                callbackBtnClick(btn);
+                                setTimeout(()=>{
+                                  working.countryCombo = false;
+                                }, 1000);
+                              });
+                            }, 1500);
+                          })
+                        }, 2500);
+                      } else {
+                        working.countryCombo = false;
+                      }
+                    });
+                  }
                 });
               }
             });
@@ -619,5 +646,5 @@ setInterval(async function () {
       return;
     }
   });
-}, 2222);
+}, 2300);
 // });

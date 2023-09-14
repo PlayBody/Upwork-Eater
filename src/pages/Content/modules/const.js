@@ -41,11 +41,15 @@ const Constants = {
     expSave: 'air3-btn air3-btn-primary mr-0 mb-0',
     expNext: 'air3-btn air3-btn-primary'//3
   },
-  OtherControls: {
+  Controls: {
     firstNameInput: 'input[id="first-name-input"][type="text"]',
     lastNameInput: 'input[id="last-name-input"][type="text"]',
     passwordInput: 'input[id="password-input"][type="password"]',
     emailInput: 'input[id="redesigned-input-email"][type="email"]',
+    countrySpan: 'span[class="flex-1 ellipsis"]',
+    countryCombo: 'div[data-test="dropdown-toggle"]',
+    countrySearchInput: 'input[type="search"][role="combobox"]',
+    countryFirstItem: 'li[role="option"]',
     agreeTerm: 'input[id="checkbox-terms"][type="checkbox"]',
     signupBtn: 'button[id="button-submit-form"][class="up-btn up-btn-primary up-btn-block mt-10 mt-md-20 mb-20"]',
     cookieAcceptBtn: 'button[id="onetrust-accept-btn-handler"]',
@@ -74,6 +78,11 @@ const Constants = {
   Ids: {
     firstName: "firstName",
     lastName: "lastName",
+    country: "country",
+    address: "address",
+    phoneNumber: "phoneNumber",
+    city: "city",
+    zipCode: "zipCode",
     title: "title",
     overview: "overview",
     skills: "skills",
