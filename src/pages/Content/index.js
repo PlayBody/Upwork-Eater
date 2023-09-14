@@ -391,10 +391,10 @@ setInterval(async function () {
             // parse from json
             funcs.loadFromLocal(Ids.skillsUse, (skills) => {
               //const skills = skillsString.split(" ");
-              console.log('SKILLS', skills);
+              // console.log('SKILLS', skills);
               if (funcs.isEmpty(skills) || skills.length == 0) {
                 funcs.loadFromLocal(Ids.skills, (skillsAll) => {
-                  funcs.saveToLocal(Ids.skillsUse, skillsAll.split(' '), () => {
+                  funcs.saveToLocal(Ids.skillsUse, skillsAll.split(','), () => {
                     setTimeout(() => {
                       funcs.trySelectElementBySelector(
                         document,
