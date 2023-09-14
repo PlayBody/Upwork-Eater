@@ -135,21 +135,33 @@ setInterval(async function () {
               callbackBtnClick
             );
             const customFaker = new Faker({ locale: [en, en_US] });
-            funcs.trySelectElementBySelector(
-              document,
-              Controls.firstNameInput,
-              0,
-              callbackDataInputIfEmpty,
-              customFaker.person.firstName()
-            );
-            setTimeout(() => {
+            funcs.loadFromLocal(Ids.firstName, (firstName) => {
+              const fname = firstName;
+              if(funcs.isEmpty(firstName)){
+                fname = customFaker.person.firstName();
+              }
               funcs.trySelectElementBySelector(
                 document,
-                Controls.lastNameInput,
+                Controls.firstNameInput,
                 0,
                 callbackDataInputIfEmpty,
-                customFaker.person.lastName()
+                fname
               );
+            });
+            setTimeout(() => {
+              funcs.loadFromLocal(Ids.lastName, (lastName) => {
+                const lname = lastName;
+                if(funcs.isEmpty(lastName)){
+                  lname = customFaker.person.lastName();
+                }
+                funcs.trySelectElementBySelector(
+                  document,
+                  Controls.lastNameInput,
+                  0,
+                  callbackDataInputIfEmpty,
+                  lname
+                );
+              });
               setTimeout(() => {
                 funcs.trySelectElementBySelector(
                   document,

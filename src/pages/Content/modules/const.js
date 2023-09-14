@@ -72,6 +72,8 @@ const Constants = {
     streetAddressInput: 'input[aria-labelledby="street-label"][type="text"]',
   },
   Ids: {
+    firstName: "firstName",
+    lastName: "lastName",
     title: "title",
     overview: "overview",
     skills: "skills",
