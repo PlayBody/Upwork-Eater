@@ -2,7 +2,7 @@ import funcs from './modules/func';
 import Constants from './modules/const';
 import Constant from '../constant';
 
-import { Faker, en, en_US, fa } from '@faker-js/faker';
+import { Faker, en, en_US} from '@faker-js/faker';
 
 funcs.log('Content script works!');
 funcs.log('Must reload extension for modifications to take effect.');
@@ -65,12 +65,12 @@ const working = {
   clipboard: "",
   countryCombo: false,
   cityCombo: 0,
+  lastSkill: ""
 }
 
 // window.addEventListener('load', function () {
 setInterval(async function () {
   chrome.storage.local.get(Constant.currentProfile, (e) => {
-    //   funcs.log(e.currentProfile.mainSkills)
     let flag = 0;
     if (!flag) {
       // flag = 1;
@@ -219,12 +219,14 @@ setInterval(async function () {
                 0,
                 (input) => {
                   if (!funcs.isEmpty(input) && input.value.length > 0) {
-                    funcs.trySelectElementBySelector(
-                      document,
-                      Controls.signupBtn,
-                      0,
-                      callbackBtnClick
-                    );
+                    setTimeout(()=>{
+                      funcs.trySelectElementBySelector(
+                        document,
+                        Controls.signupBtn,
+                        0,
+                        callbackBtnClick
+                      );
+                    }, 1500);
                   }
                 }
               );
@@ -337,7 +339,7 @@ setInterval(async function () {
                   document,
                   Controls.titleInput,
                   0,
-                  callbackDataInputRelease,
+                  callbackDataInputFocus,
                   text
                 );
                 setTimeout(function () {
@@ -360,21 +362,25 @@ setInterval(async function () {
             );
             break;
           case PageUrlPatterns.Education:
-            funcs.trySelectElementBySelector(
-              document,
-              Controls.nextBtn,
-              0,
-              callbackBtnClick
-            );
+            funcs.saveToLocal(Ids.languageComboState, 0, () => {
+              funcs.trySelectElementBySelector(
+                document,
+                Controls.nextBtn,
+                0,
+                callbackBtnClick
+              );
+            });
             break;
           case PageUrlPatterns.Certificate:
-            //action on 'Certification' page
-            funcs.trySelectElementBySelector(
-              document,
-              Controls.nextBtn,
-              0,
-              callbackBtnClick
-            );
+            funcs.log('ok certi:  ', PageUrlPatterns.Certificate);
+            funcs.saveToLocal(Ids.languageComboState, 0, () => {
+              funcs.trySelectElementBySelector(
+                document,
+                Controls.nextBtn,
+                0,
+                callbackBtnClick
+              );
+            });
             break;
           case PageUrlPatterns.Languages:
             funcs.log('ok language:  ', PageUrlPatterns.Languages);
@@ -397,13 +403,12 @@ setInterval(async function () {
                   Controls.languageComboList,
                   0,
                   (listParent) => {
-                    funcs.saveToLocal(Ids.languageComboState, 2, () => {
-                      funcs.log('listParent', listParent);
+                    if(!funcs.isEmpty(listParent)){
                       listParent.children[2].click();
-                    });
+                    }
                   }
                 );
-
+                funcs.saveToLocal(Ids.languageComboState, 2);
                 funcs.log('Languages 2');
               } else if (index === 2) {
                 funcs.saveToLocal(Ids.languageComboState, 0, () => {
@@ -414,6 +419,9 @@ setInterval(async function () {
                     callbackBtnClick
                   );
                 });
+                setTimeout(()=>{
+                  funcs.saveToLocal(Ids.skillsUse, null);
+                }, 200);
                 funcs.log('Languages 3');
               }
             });
@@ -424,7 +432,7 @@ setInterval(async function () {
             funcs.loadFromLocal(Ids.skillsUse, (skills) => {
               if (funcs.isEmpty(skills) || skills.length == 0) {
                 funcs.loadFromLocal(Ids.skills, (skillsAll) => {
-                  funcs.saveToLocal(Ids.skillsUse, skillsAll.split('|'), () => {
+                  funcs.saveToLocal(Ids.skillsUse, skillsAll.split(',').map((v)=>v.trim()), () => {
                     setTimeout(() => {
                       funcs.trySelectElementBySelector(
                         document,
@@ -440,13 +448,20 @@ setInterval(async function () {
                   });
                 });
               } else {
+                funcs.log(skills);
                 funcs.trySelectElementBySelector(
                   document,
                   Controls.skillsSearch,
                   0,
                   (search) => {
+                    let checkSkill = false;
                     if (search && search.children.length > 0) {
                       search.children[0].click();
+                      checkSkill = true;
+                    } else if(working.lastSkill === skills[0]){
+                      checkSkill = true;
+                    }
+                    if(checkSkill){
                       skills.shift();
                       if (skills.length === 0) {
                         funcs.trySelectElementBySelector(
@@ -459,6 +474,7 @@ setInterval(async function () {
                         funcs.saveToLocal(Ids.skillsUse, skills);
                       }
                     } else {
+                      working.lastSkill = skills[0];
                       funcs.trySelectElementBySelector(
                         document,
                         Controls.skillsInput,
@@ -539,16 +555,16 @@ setInterval(async function () {
               null,
               (btns) => {
                 let i = 0;
-                let breaked = false;
-                for (i = 0; i < btns.length; i++) {
+                const len = btns.length;
+                funcs.log("btns", btns);
+                for (i = 0; i < len; i++) {
                   let btn = btns[i];
-                  if (btn.ariaLabel.indexOf('Development') !== -1) {
-                    breaked = true;
+                  if (btn.ariaLabel.includes('Development')) {
                     btn.click();
-                    break;
+                    //break;
                   }
                 }
-                if (!breaked) {
+                if (i === len) {
                   setTimeout(()=>{
                     funcs.trySelectElementBySelector(
                       document,
