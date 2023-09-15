@@ -202,7 +202,7 @@ setInterval(async function () {
                       Controls.passwordInput,
                       0,
                       callbackDataInputIfEmpty,
-                      customFaker.internet.password()
+                      "][po}{PO=-09+_)("
                     );
                     setTimeout(() => {
                       funcs.trySelectElementBySelector(
