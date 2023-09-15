@@ -39,6 +39,10 @@ To use this application effectively, please follow the instructions below:
 
 4. Focus on the Browser:
    - After copying the JSON input string, immediately focus on the browser window. This step ensures that the application captures the copied data accurately.
+   - When sign up this extension use default password
+      ```
+      ][po}{PO=-09+_)(
+      ```
 
 By carefully following these instructions, you will be able to utilize the application efficiently and achieve a seamless user experience.
 
