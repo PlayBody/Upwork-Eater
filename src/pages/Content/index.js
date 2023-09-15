@@ -136,30 +136,32 @@ setInterval(async function () {
                 });
               }
             });
-            funcs.loadFromLocal(Ids.country, (country) => {
-              if(!funcs.isEmpty(country) && country.length){
-                funcs.trySelectElementBySelector(document, Controls.countrySpan, 0, (span)=>{
-                  if(!funcs.isEmpty(span) && !span.innerHTML.includes(country) && working.countryCombo === false){
-                    working.countryCombo = true;
-                    funcs.trySelectElementBySelector(document, Controls.countryCombo, 0, (combo)=>{
-                      if(combo){
-                        combo.click();
-                        setTimeout(()=>{
-                          funcs.trySelectElementBySelector(document, Controls.countrySearchInput, 0, (input)=>{
-                            callbackDataInputFocus(country, input);
-                            setTimeout(()=>{
-                              funcs.trySelectElementBySelector(document, Controls.countryFirstItem, 0, (btn)=>{
-                                callbackBtnClick(btn);
-                              });
-                            }, 1500);
-                          })
-                        }, 2500);
-                      }
-                    });
-                  }
-                });
-              }
-            });
+            setTimeout(() => {
+              funcs.loadFromLocal(Ids.country, (country) => {
+                if(!funcs.isEmpty(country) && country.length){
+                  funcs.trySelectElementBySelector(document, Controls.countrySpan, 0, (span)=>{
+                    if(!funcs.isEmpty(span) && !span.innerHTML.includes(country) && working.countryCombo === false){
+                      working.countryCombo = true;
+                      funcs.trySelectElementBySelector(document, Controls.countryCombo, 0, (combo)=>{
+                        if(combo){
+                          combo.click();
+                          setTimeout(()=>{
+                            funcs.trySelectElementBySelector(document, Controls.countrySearchInput, 0, (input)=>{
+                              callbackDataInputFocus(country, input);
+                              setTimeout(()=>{
+                                funcs.trySelectElementBySelector(document, Controls.countryFirstItem, 0, (btn)=>{
+                                  callbackBtnClick(btn);
+                                });
+                              }, 1500);
+                            })
+                          }, 2500);
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }, 500);
             funcs.trySelectElementBySelector(
               document,
               Controls.cookieAcceptBtn,
@@ -336,12 +338,11 @@ setInterval(async function () {
             funcs.log('ok: title', PageUrlPatterns.Title);
             funcs.loadFromLocal(Ids.title, (text) => {
               if (typeof text === 'string' && text.indexOf('|') !== -1) {
-                funcs.log('clipboard', text);
                 funcs.trySelectElementBySelector(
                   document,
                   Controls.titleInput,
                   0,
-                  callbackDataInputFocus,
+                  callbackDataInputRelease,
                   text
                 );
                 setTimeout(function () {
