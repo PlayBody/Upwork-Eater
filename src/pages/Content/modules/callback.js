@@ -1,37 +1,78 @@
+import Debuger from "./debuger";
+import Funcs from "./func";
+
 const Callbacks = {
-  clickButton: (btn) => {
-    funcs.isBtn(btn) && btn.click();
+  clickButton: (btn, ...params) => {
+    Debuger.callback("btn", btn, params);
+    if(Funcs.isButton(btn)) {
+      const [callback] = params;
+      btn.onclick = () => {
+        if(typeof callback === 'function'){
+          callback(btn);
+        }
+      }
+      btn.click();
+    }
   },
 
-  clickCheckbox: (radio) => {
-    if (funcs.isBtn(radio) && !radio.checked) {
+  clickCheckbox: (radio, ...params) => {
+    Debuger.callback("btn", radio, params);
+    if (Funcs.isButton(radio) && !radio.checked) {
+      const [callback] = params;
+      radio.onclick = () => {
+        if(typeof callback === 'function'){
+          callback(radio);
+        }
+      }
       radio.click();
     }
   },
 
-  inputText: (data, input) => {
-    if (funcs.isInput(input)) {
-      input.click();
-      input.value = data;
+  inputText: (input, ...params) => {
+    Debuger.callback("inputText", input, params);
+    if (Funcs.isInput(input)) {
+      const [text, callback] = params;
       const inputEvent = new Event('input', { bubbles: true });
       const blurEvent = new Event('blur', { bubbles: true });
-      input.dispatchEvent(inputEvent);
-      input.dispatchEvent(blurEvent);
-    }
-  },
-
-  inputTextNotBlur: (data, input) => {
-    if (funcs.isInput(input)) {
+      input.onblur = () => {
+        if(typeof callback === 'function'){
+          callback(input);
+        }
+      }
+      input.oninput = () => {
+        input.dispatchEvent(blurEvent);
+      }
+      input.onclick = () => {
+        input.value = text;
+        input.dispatchEvent(inputEvent);
+      }
       input.click();
-      input.value = data;
-      const inputEvent = new Event('input', { bubbles: true });
-      input.dispatchEvent(inputEvent);
     }
   },
 
-  inputTextIfEmpty: (data, input) => {
+  inputTextNotBlur: (input, ...params) => {
+    Debuger.callback("inputTextNotBlur", input, params);
+    if (Funcs.isInput(input)) {
+      const [text, callback] = params;
+      const inputEvent = new Event('input', { bubbles: true });
+      input.oninput = () => {
+        if(typeof callback === 'function'){
+          callback(input);
+        }
+      }
+      input.onclick = () => {
+        input.value = text;
+        input.dispatchEvent(inputEvent);
+      }
+      input.click();
+    }
+  },
+
+  inputTextIfEmpty: (input, ...params) => {
+    Debuger.callback("inputTextIfEmpty", input, params);
     if (input && typeof input.value === 'string' && input.value.length === 0) {
-      Callbacks.inputText(data, input);
+      const [text, callback] = params;
+      Callbacks.inputText(input, text, callback);
     }
   },
 };
