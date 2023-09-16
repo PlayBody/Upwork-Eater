@@ -39,19 +39,8 @@ const callbackDataInputFocus = (data, input) => {
 };
 
 const callbackDataInputIfEmpty = (data, input) => {
-  if (input.value === null || input.value.length === 0) {
+  if (input && typeof input.value === 'string' && input.value.length === 0) {
     callbackDataInputRelease(data, input);
-  }
-};
-
-const callbackHtmlInput = (data, input) => {
-  funcs.log('inputdata', data, 'element', input);
-  if (funcs.isInput(input)) {
-    input.innerHTML = data;
-    setTimeout(() => {
-      const inputEvent = new Event('input', { bubbles: true });
-      input.dispatchEvent(inputEvent);
-    }, 100);
   }
 };
 
@@ -192,7 +181,7 @@ const timerId = setInterval(async function () {
           const customFaker = new Faker({ locale: [en, en_US] });
           setTimeout(() => {
             funcs.loadFromLocalObj([Ids.firstName, Ids.lastName], (names) => {
-              const fname = names.firstName;
+              let fname = names.firstName;
               if (funcs.isEmpty(names.firstName)) {
                 fname = customFaker.person.firstName();
               }
@@ -204,7 +193,7 @@ const timerId = setInterval(async function () {
                 fname
               );
               setTimeout(() => {
-                const lname = names.lastName;
+                let lname = names.lastName;
                 if (funcs.isEmpty(names.lastName)) {
                   lname = customFaker.person.lastName();
                 }
