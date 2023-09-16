@@ -68,23 +68,16 @@ const timerId = setInterval(() => {
           Debuger.log(
             PageUrlPatterns.SignUpDest
           );
-          Io.loadFromLocal(Ids.signupSelectState, (index) => {
-            if (Funcs.isEmpty(index) || index === 0) {
-              Io.saveToLocal(Ids.signupSelectState, 1, () => {
-                Dom.selectElementByQuery(
-                  Controls.radioSignUpByLancer,
-                  Callbacks.clickCheckbox
-                );
-              });
-            } else if (index === 1) {
-              Io.saveToLocal(Ids.signupSelectState, 0, () => {
-                Dom.selectElementByQuery(
-                  Controls.btnApplyAsLancer,
-                  Callbacks.clickButton
-                );
-              });
+          Dom.selectElementByQuery(
+            Controls.radioSignUpByLancer,
+            Callbacks.clickCheckbox,
+            () => {
+              Dom.selectElementByQuery(
+                Controls.btnApplyAsLancer,
+                Callbacks.clickButton
+              );
             }
-          });
+          );
           setTimeout(() => {
             Io.loadFromLocal(Ids.country, (country) => {
               if (!Funcs.isEmpty(country) && country.length) {
@@ -563,4 +556,4 @@ const timerId = setInterval(() => {
       }
     }
   });
-}, 2300);
+}, 3000);

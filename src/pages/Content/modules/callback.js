@@ -8,7 +8,11 @@ const Callbacks = {
       const [callback] = params;
       btn.onclick = () => {
         if(typeof callback === 'function'){
-          callback(btn);
+          if(callback.length > 0){
+            callback(btn);
+          } else {
+            callback();
+          }
         }
       }
       btn.click();
@@ -16,12 +20,17 @@ const Callbacks = {
   },
 
   clickCheckbox: (radio, ...params) => {
-    Debuger.callback("btn", radio, params);
+    Debuger.callback("radio", radio, params);
     if (Funcs.isButton(radio) && !radio.checked) {
       const [callback] = params;
       radio.onclick = () => {
+        Debuger.callback("radio_callback", callback.length);
         if(typeof callback === 'function'){
-          callback(radio);
+          if(callback.length > 0){
+            callback(radio);
+          } else {
+            callback();
+          }
         }
       }
       radio.click();
@@ -36,7 +45,11 @@ const Callbacks = {
       const blurEvent = new Event('blur', { bubbles: true });
       input.onblur = () => {
         if(typeof callback === 'function'){
-          callback(input);
+          if(callback.length > 0){
+            callback(input);
+          } else {
+            callback();
+          }
         }
       }
       input.oninput = () => {
@@ -57,7 +70,11 @@ const Callbacks = {
       const inputEvent = new Event('input', { bubbles: true });
       input.oninput = () => {
         if(typeof callback === 'function'){
-          callback(input);
+          if(callback.length > 0){
+            callback(input);
+          } else {
+            callback();
+          }
         }
       }
       input.onclick = () => {

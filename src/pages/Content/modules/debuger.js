@@ -2,6 +2,7 @@ const debug = true;
 const funcLog = true;
 const callbackLog = true;
 const ioLog = true;
+const domLog = true;
 
 const Debuger = {
   log: (message, ...params) => {
@@ -15,6 +16,9 @@ const Debuger = {
   },
   io: (message, ...params) => {
     debug && ioLog && console.log("io: ", message, ...params);
+  },
+  dom: (message, ...params) => {
+    debug && domLog && console.log("dom: ", message, ...params);
   }
 }
 

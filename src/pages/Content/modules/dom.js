@@ -47,8 +47,10 @@ const Dom = {
       if(Funcs.isEmpty(param)){
         callback(findElement);
       } else if(Array.isArray()){
+        Debuger.dom("dom_param_arr", param);
         callback(findElement, ...param);
       } else {
+        Debuger.dom("dom_param_obj", param);
         callback(findElement, param);
       }
     }
