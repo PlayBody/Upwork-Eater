@@ -1,10 +1,38 @@
 import Debuger from "./debuger";
 import Funcs from "./func";
 
+const DELAY = 500;
+
 const Callbacks = {
   clickButton: (btn, ...params) => {
     Debuger.callback("btn", btn, params);
     if(Funcs.isButton(btn)) {
+      const [callback] = params;
+      btn.onclick = () => {
+        Debuger.callback("btn_callback", btn);
+        if(typeof callback === 'function'){
+          if(callback.length > 0){
+            callback(btn);
+          } else {
+            callback();
+          }
+        }
+      }
+      if(btn.disabled){
+        setTimeout(()=>{
+          if(!btn.disabled){
+            btn.click();
+          }
+        }, DELAY);
+      } else {
+        btn.click();
+      }
+    }
+  },
+
+  clickCheckbox: (btn, ...params) => {
+    Debuger.callback("radio", btn, params);
+    if (Funcs.isButton(btn) && !btn.checked) {
       const [callback] = params;
       btn.onclick = () => {
         if(typeof callback === 'function'){
@@ -15,25 +43,15 @@ const Callbacks = {
           }
         }
       }
-      btn.click();
-    }
-  },
-
-  clickCheckbox: (radio, ...params) => {
-    Debuger.callback("radio", radio, params);
-    if (Funcs.isButton(radio) && !radio.checked) {
-      const [callback] = params;
-      radio.onclick = () => {
-        Debuger.callback("radio_callback", callback.length);
-        if(typeof callback === 'function'){
-          if(callback.length > 0){
-            callback(radio);
-          } else {
-            callback();
+      if(btn.disabled){
+        setTimeout(()=>{
+          if(!btn.disabled){
+            btn.click();
           }
-        }
+        }, DELAY);
+      } else {
+        btn.click();
       }
-      radio.click();
     }
   },
 
