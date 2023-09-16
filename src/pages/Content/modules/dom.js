@@ -22,7 +22,7 @@ const Dom = {
     });
     return whichPage;
   },
-  selectElement: (identifier, callback, param, index, isClass) => {
+  selectElement: (identifier, callback, params, index, isClass) => {
     const document = Dom.document;
     const findElements = isClass ? document.getElementsByClassName(identifier) : document.querySelectorAll(identifier);
     const findElement = Funcs.isEmpty(index) ? findElements : (findElements.length > index ? findElements[index] : null);
@@ -35,33 +35,31 @@ const Dom = {
         if (Funcs.isEmpty(element)) {
           callback(null);
         }
-        if(Funcs.isEmpty(param)){
+        if(Funcs.isEmpty(params)){
           callback(element);
         } else {
-          callback(element, param);
+          callback(element, params);
         }
         observer.disconnect();
       });
       observer.observe(document, { subtree: true, childList: true });
     } else {
-      if(Funcs.isEmpty(param)){
+      if(Funcs.isEmpty(params)){
         callback(findElement);
-      } else if(Array.isArray()){
-        Debuger.dom("dom_param_arr", param);
-        callback(findElement, ...param);
+      } else if(Array.isArray(params)){
+        callback(findElement, ...params);
       } else {
-        Debuger.dom("dom_param_obj", param);
-        callback(findElement, param);
+        callback(findElement, params);
       }
     }
   },
 
-  selectElementByClass: (identifier, callback, param = null, index = 0) => {
-    Dom.selectElement(identifier, callback, param, index, true);
+  selectElementByClass: (identifier, callback, params = null, index = 0) => {
+    Dom.selectElement(identifier, callback, params, index, true);
   },
   
-  selectElementByQuery: (identifier, callback, param = null, index = 0) => {
-    Dom.selectElement(identifier, callback, param, index, false);
+  selectElementByQuery: (identifier, callback, params = null, index = 0) => {
+    Dom.selectElement(identifier, callback, params, index, false);
   },
 }
 

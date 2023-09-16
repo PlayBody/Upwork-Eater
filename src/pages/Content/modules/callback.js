@@ -1,7 +1,7 @@
 import Debuger from "./debuger";
 import Funcs from "./func";
 
-const DELAY = 500;
+const DELAY = 800;
 
 const Callbacks = {
   clickButton: (btn, ...params) => {

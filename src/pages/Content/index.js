@@ -13,7 +13,6 @@ const { PageUrlPatterns, BtnClassNames, Controls, Ids } = Constants;
 
 const working = {
   clipboard: '',
-  countryCombo: false,
   cityCombo: 0,
   lastSkill: '',
 };
@@ -65,9 +64,7 @@ const timerId = setInterval(() => {
       switch (whichPage) {
         case PageUrlPatterns.SignUp:
         case PageUrlPatterns.SignUpDest:
-          Debuger.log(
-            PageUrlPatterns.SignUpDest
-          );
+          Debuger.log(PageUrlPatterns.SignUpDest);
           Dom.selectElementByQuery(
             Controls.radioSignUpByLancer,
             Callbacks.clickCheckbox,
@@ -78,45 +75,40 @@ const timerId = setInterval(() => {
               );
             }
           );
-          setTimeout(() => {
-            Io.loadFromLocal(Ids.country, (country) => {
-              if (!Funcs.isEmpty(country) && country.length) {
-                Dom.selectElementByQuery(Controls.spanCountry, (span) => {
-                  if (
-                    !Funcs.isEmpty(span) &&
-                    !span.innerHTML.includes(country) &&
-                    working.countryCombo === false
-                  ) {
-                    working.countryCombo = true;
-                    Dom.selectElementByQuery(
-                      Controls.comboCountry,
-                      (combo) => {
-                        if (combo) {
-                          combo.click();
-                          setTimeout(() => {
-                            Dom.selectElementByQuery(
-                              Controls.inputCountrySearch,
-                              (input) => {
-                                Callbacks.inputTextNotBlur(country, input);
-                                setTimeout(() => {
-                                  Dom.selectElementByQuery(
-                                    Controls.liCountryFirst,
-                                    (btn) => {
-                                      Callbacks.clickButton(btn);
-                                    }
-                                  );
-                                }, 1500);
-                              }
-                            );
-                          }, 2500);
-                        }
-                      }
-                    );
-                  }
-                });
-              }
-            });
-          }, 500);
+          Io.loadFromLocal(Ids.country, (country) => {
+            if (!Funcs.isEmpty(country) && country.length) {
+              Dom.selectElementByQuery(Controls.spanCountry, (span) => {
+                if (
+                  !Funcs.isEmpty(span) &&
+                  !span.innerHTML.includes(country)
+                ) {
+                  Dom.selectElementByQuery(
+                    Controls.comboCountry,
+                    Callbacks.clickButton,
+                    () => {
+                      setTimeout(() => {
+                        Dom.selectElementByQuery(
+                          Controls.inputCountrySearch,
+                          Callbacks.inputTextNotBlur,
+                          [
+                            country,
+                            () => {
+                              setTimeout(() => {
+                                Dom.selectElementByQuery(
+                                  Controls.liCountryFirst,
+                                  Callbacks.clickButton
+                                );
+                              }, 1500);
+                            },
+                          ]
+                        );
+                      }, 2500);
+                    }
+                  );
+                }
+              });
+            }
+          });
           Dom.selectElementByQuery(
             Controls.btnCookieAccept,
             Callbacks.clickButton
@@ -124,46 +116,35 @@ const timerId = setInterval(() => {
           const customFaker = new Faker({ locale: [en, en_US] });
           setTimeout(() => {
             Io.loadFromLocalObj([Ids.firstName, Ids.lastName], (names) => {
-              let fname = names.firstName;
-              if (Funcs.isEmpty(names.firstName)) {
-                fname = customFaker.person.firstName();
-              }
+              const fname = Funcs.isEmpty(names.firstName) ? customFaker.person.firstName() : names.firstName;
+              const lname = Funcs.isEmpty(names.lastName) ? customFaker.person.lastName() : names.lastName;
               Dom.selectElementByQuery(
                 Controls.inputFirstName,
                 Callbacks.inputTextIfEmpty,
                 fname
               );
-              setTimeout(() => {
-                let lname = names.lastName;
-                if (Funcs.isEmpty(names.lastName)) {
-                  lname = customFaker.person.lastName();
-                }
-                Dom.selectElementByQuery(
-                  Controls.inputLastName,
-                  Callbacks.inputTextIfEmpty,
-                  lname
-                );
-              }, 100);
-              setTimeout(() => {
-                setTimeout(() => {
-                  Dom.selectElementByQuery(
-                    Controls.inputPassword,
-                    Callbacks.inputTextIfEmpty,
-                    '][po}{PO=-09+_)('
-                  );
-                  setTimeout(() => {
-                    Dom.selectElementByQuery(
-                      Controls.inputAgreeTerm,
-                      Callbacks.clickCheckbox
-                    );
-                  }, 200);
-                }, 200);
-              }, 200);
+              Dom.selectElementByQuery(
+                Controls.inputLastName,
+                Callbacks.inputTextIfEmpty,
+                lname
+              );
+              Dom.selectElementByQuery(
+                Controls.inputPassword,
+                Callbacks.inputTextIfEmpty,
+                '][po}{PO=-09+_)('
+              );
+              Dom.selectElementByQuery(
+                Controls.inputAgreeTerm,
+                Callbacks.clickCheckbox
+              );
             });
-          }, 150);
+          }, 100);
           setTimeout(() => {
             Dom.selectElementByQuery(Controls.inputEmail, (input) => {
-              if (!Funcs.isEmpty(input) && !Funcs.isEmpty(input.value) && input.value.length > 0) {
+              if (
+                !Funcs.isInput(input) &&
+                input.value.length > 0
+              ) {
                 setTimeout(() => {
                   Dom.selectElementByQuery(
                     Controls.btnSignUp,
@@ -190,24 +171,15 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.Experience:
           Debuger.log('ok exp:  ', PageUrlPatterns.Experience);
-          Dom.selectElementByClass(
-            BtnClassNames.skip,
-            Callbacks.clickButton
-          );
+          Dom.selectElementByClass(BtnClassNames.skip, Callbacks.clickButton);
           break;
         case PageUrlPatterns.Goal:
           Debuger.log('ok goal:  ', PageUrlPatterns.Goal);
-          Dom.selectElementByClass(
-            BtnClassNames.skip,
-            Callbacks.clickButton
-          );
+          Dom.selectElementByClass(BtnClassNames.skip, Callbacks.clickButton);
           break;
         case PageUrlPatterns.WorkPreference:
           Debuger.log('ok prefer:  ', PageUrlPatterns.WorkPreference);
-          Dom.selectElementByClass(
-            BtnClassNames.skip,
-            Callbacks.clickButton
-          );
+          Dom.selectElementByClass(BtnClassNames.skip, Callbacks.clickButton);
           break;
         case PageUrlPatterns.ResumeImport:
           Debuger.log('ok resume:  ', PageUrlPatterns.ResumeImport);
@@ -290,14 +262,11 @@ const timerId = setInterval(() => {
               });
               Debuger.log('Languages 1');
             } else if (index === 1) {
-              Dom.selectElementByQuery(
-                Controls.ulLanguage,
-                (listParent) => {
-                  if (!Funcs.isEmpty(listParent)) {
-                    listParent.children[2].click();
-                  }
+              Dom.selectElementByQuery(Controls.ulLanguage, (listParent) => {
+                if (!Funcs.isEmpty(listParent)) {
+                  listParent.children[2].click();
                 }
-              );
+              });
               Io.saveToLocal(Ids.languageComboState, 2);
               Debuger.log('Languages 2');
             } else if (index === 2) {
