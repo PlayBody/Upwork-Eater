@@ -1,6 +1,5 @@
 import React from 'react';
 import logo from '../../assets/img/logo.svg';
-import saveData from '../constant';
 import './Newtab.css';
 import './Newtab.scss';
 

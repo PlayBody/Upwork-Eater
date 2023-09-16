@@ -59,7 +59,7 @@ const funcs = {
 
   isUpworkPage: (document) => {
     const currentUrl = document.location.href;
-    return currentUrl.indexOf('upwork.com') === -1 ? false : true;
+    return currentUrl.includes('upwork.com');
   },
 
   whichUpworkPage: (document) => {
