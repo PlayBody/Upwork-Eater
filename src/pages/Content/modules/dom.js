@@ -26,7 +26,6 @@ const Dom = {
     const document = Dom.document;
     const findElements = isClass ? document.getElementsByClassName(identifier) : document.querySelectorAll(identifier);
     const findElement = Funcs.isEmpty(index) ? findElements : (findElements.length > index ? findElements[index] : null);
-    // Debuger.func(document, "ABC", findElements, findElements.length, findElement, identifier, isClass);
     if (Funcs.isEmpty(findElement)) {
       const observer = new MutationObserver(() => {
         const elements = isClass ? document.getElementsByClassName(identifier) : document.querySelectorAll(identifier);
@@ -47,8 +46,10 @@ const Dom = {
       if(Funcs.isEmpty(params)){
         callback(findElement);
       } else if(Array.isArray(params)){
+        Debuger.dom(document, "Array", index, findElements.length, findElement, identifier, isClass);
         callback(findElement, ...params);
       } else {
+        Debuger.dom(document, "String", index, findElement, findElement, identifier, isClass);
         callback(findElement, params);
       }
     }

@@ -17,6 +17,7 @@ const Callbacks = {
             callback();
           }
         }
+        btn.onclick = null;
       }
       if(btn.disabled){
         setTimeout(()=>{
@@ -42,6 +43,7 @@ const Callbacks = {
             callback();
           }
         }
+        btn.onclick = null;
       }
       if(btn.disabled){
         setTimeout(()=>{
@@ -69,13 +71,16 @@ const Callbacks = {
             callback();
           }
         }
+        input.onblur = null;
       }
       input.oninput = () => {
         input.dispatchEvent(blurEvent);
+        input.oninput = null;
       }
       input.onclick = () => {
         input.value = text;
         input.dispatchEvent(inputEvent);
+        input.onclick = null;
       }
       input.click();
     }
@@ -94,10 +99,12 @@ const Callbacks = {
             callback();
           }
         }
+        input.oninput = null;
       }
       input.onclick = () => {
         input.value = text;
         input.dispatchEvent(inputEvent);
+        input.onclick = null;
       }
       input.click();
     }

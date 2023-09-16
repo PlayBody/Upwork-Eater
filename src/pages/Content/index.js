@@ -12,14 +12,24 @@ Debuger.log('Must reload extension for modifications to take effect.');
 const { PageUrlPatterns, BtnClassNames, Controls, Ids } = Constants;
 
 const working = {
+  notApplyAsLancer: true,
+  notInputFirstName: true,
+  notInputLastName: true,
+  notInputPassword: true,
+  notClickUploadResume: true,
+  notClickResumeChoose: true,
+  notClickCookieAccpet: true,
+  notLocationSimpleInput: true,
+  notLocationCityInput: true,
+  currentSkill: null,
+  skills: [],
   clipboard: '',
-  cityCombo: 0,
-  lastSkill: '',
 };
 
 const timerId = setInterval(() => {
   Io.loadFromLocal(Ids.isExit, (isExit) => {
     if (isExit) {
+      Debuger.log('upwork auto signup disabled');
       clearInterval(timerId);
       return;
     }
@@ -65,95 +75,136 @@ const timerId = setInterval(() => {
         case PageUrlPatterns.SignUp:
         case PageUrlPatterns.SignUpDest:
           Debuger.log(PageUrlPatterns.SignUpDest);
+          working.notApplyAsLancer &&
+            Dom.selectElementByQuery(
+              Controls.radioSignUpByLancer,
+              Callbacks.clickCheckbox,
+              () => {
+                Dom.selectElementByQuery(
+                  Controls.btnApplyAsLancer,
+                  Callbacks.clickButton,
+                  () => {
+                    working.notApplyAsLancer = false;
+                  }
+                );
+              }
+            );
+
           Dom.selectElementByQuery(
-            Controls.radioSignUpByLancer,
-            Callbacks.clickCheckbox,
-            () => {
-              Dom.selectElementByQuery(
-                Controls.btnApplyAsLancer,
-                Callbacks.clickButton
-              );
-            }
-          );
-          Io.loadFromLocal(Ids.country, (country) => {
-            if (!Funcs.isEmpty(country) && country.length) {
-              Dom.selectElementByQuery(Controls.spanCountry, (span) => {
-                if (
-                  !Funcs.isEmpty(span) &&
-                  !span.innerHTML.includes(country)
-                ) {
-                  Dom.selectElementByQuery(
-                    Controls.comboCountry,
-                    Callbacks.clickButton,
-                    () => {
-                      setTimeout(() => {
+            Controls.liCountryFirst,
+            (li) => {
+              if (li.length === 0) {
+                Io.loadFromLocal(Ids.country, (country) => {
+                  if (!Funcs.isEmpty(country) && country.length) {
+                    Dom.selectElementByQuery(Controls.spanCountry, (span) => {
+                      if (
+                        !Funcs.isEmpty(span) &&
+                        !span.innerHTML.includes(country)
+                      ) {
                         Dom.selectElementByQuery(
-                          Controls.inputCountrySearch,
-                          Callbacks.inputTextNotBlur,
-                          [
-                            country,
-                            () => {
-                              setTimeout(() => {
-                                Dom.selectElementByQuery(
-                                  Controls.liCountryFirst,
-                                  Callbacks.clickButton
-                                );
-                              }, 1500);
-                            },
-                          ]
+                          Controls.comboCountry,
+                          Callbacks.clickButton,
+                          () => {
+                            setTimeout(() => {
+                              Dom.selectElementByQuery(
+                                Controls.liCountryFirst,
+                                (items) => {
+                                  if (items && items.length) {
+                                    for (let k = 0; k < items.length; k++) {
+                                      const item = items[k];
+                                      if (item.innerText.includes(country)) {
+                                        Callbacks.clickButton(item);
+                                        break;
+                                      }
+                                    }
+                                  }
+                                },
+                                null,
+                                null
+                              );
+                            }, 1000);
+                          }
                         );
-                      }, 2500);
-                    }
+                      }
+                    });
+                  }
+                });
+              }
+            },
+            null,
+            null
+          );
+          working.notClickCookieAccpet &&
+            Dom.selectElementByQuery(
+              Controls.btnCookieAccept,
+              Callbacks.clickButton,
+              () => {
+                working.notClickCookieAccpet = false;
+              }
+            );
+          const customFaker = new Faker({ locale: [en, en_US] });
+          (working.notInputFirstName ||
+            working.notInputLastName ||
+            working.notInputPassword) &&
+            setTimeout(() => {
+              Io.loadFromLocalObj([Ids.firstName, Ids.lastName], (names) => {
+                const fname = Funcs.isEmpty(names.firstName)
+                  ? customFaker.person.firstName()
+                  : names.firstName;
+                const lname = Funcs.isEmpty(names.lastName)
+                  ? customFaker.person.lastName()
+                  : names.lastName;
+                working.notInputFirstName &&
+                  Dom.selectElementByQuery(
+                    Controls.inputFirstName,
+                    Callbacks.inputTextIfEmpty,
+                    [
+                      fname,
+                      () => {
+                        working.notInputFirstName = false;
+                      },
+                    ]
+                  );
+                working.notInputLastName &&
+                  Dom.selectElementByQuery(
+                    Controls.inputLastName,
+                    Callbacks.inputTextIfEmpty,
+                    [
+                      lname,
+                      () => {
+                        working.notInputLastName = false;
+                      },
+                    ]
+                  );
+                working.notInputPassword &&
+                  Dom.selectElementByQuery(
+                    Controls.inputPassword,
+                    Callbacks.inputTextIfEmpty,
+                    [
+                      '][po}{PO=-09+_)(',
+                      () => {
+                        working.notInputPassword = false;
+                      },
+                    ]
+                  );
+                Dom.selectElementByQuery(
+                  Controls.inputAgreeTerm,
+                  Callbacks.clickCheckbox
+                );
+              });
+            }, 100);
+          Dom.selectElementByQuery(Controls.inputEmail, (input) => {
+            if (Funcs.isInput(input) && input.value.length > 0) {
+              Dom.selectElementByQuery(Controls.pVerifingEmail, (p) => {
+                if (Funcs.isEmpty(p)) {
+                  Dom.selectElementByQuery(
+                    Controls.btnSignUp,
+                    Callbacks.clickButton
                   );
                 }
               });
             }
           });
-          Dom.selectElementByQuery(
-            Controls.btnCookieAccept,
-            Callbacks.clickButton
-          );
-          const customFaker = new Faker({ locale: [en, en_US] });
-          setTimeout(() => {
-            Io.loadFromLocalObj([Ids.firstName, Ids.lastName], (names) => {
-              const fname = Funcs.isEmpty(names.firstName) ? customFaker.person.firstName() : names.firstName;
-              const lname = Funcs.isEmpty(names.lastName) ? customFaker.person.lastName() : names.lastName;
-              Dom.selectElementByQuery(
-                Controls.inputFirstName,
-                Callbacks.inputTextIfEmpty,
-                fname
-              );
-              Dom.selectElementByQuery(
-                Controls.inputLastName,
-                Callbacks.inputTextIfEmpty,
-                lname
-              );
-              Dom.selectElementByQuery(
-                Controls.inputPassword,
-                Callbacks.inputTextIfEmpty,
-                '][po}{PO=-09+_)('
-              );
-              Dom.selectElementByQuery(
-                Controls.inputAgreeTerm,
-                Callbacks.clickCheckbox
-              );
-            });
-          }, 100);
-          setTimeout(() => {
-            Dom.selectElementByQuery(Controls.inputEmail, (input) => {
-              if (
-                !Funcs.isInput(input) &&
-                input.value.length > 0
-              ) {
-                setTimeout(() => {
-                  Dom.selectElementByQuery(
-                    Controls.btnSignUp,
-                    Callbacks.clickButton
-                  );
-                }, 1500);
-              }
-            });
-          }, 100);
           break;
         case PageUrlPatterns.CreateProfile:
           Debuger.log('ok create profile:  ', PageUrlPatterns.CreateProfile);
@@ -183,41 +234,32 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.ResumeImport:
           Debuger.log('ok resume:  ', PageUrlPatterns.ResumeImport);
-          Io.loadFromLocal(Ids.resumeImportState, (index) => {
-            if (Funcs.isEmpty(index) || index === 0) {
-              Dom.selectElementByQuery(Controls.btnUploadResume, (btn) => {
-                Io.saveToLocal(Ids.resumeImportState, 1, () => {
-                  Callbacks.clickButton(btn);
-                });
-              });
-              Debuger.log('Resume 1');
-            } else if (index === 1) {
-              setTimeout(() => {
-                Dom.selectElementByQuery(Controls.btnResumeChoose, (btn) => {
-                  if (Funcs.isButton(btn)) {
-                    try {
-                      btn.click();
-                      Io.saveToLocal(Ids.resumeImportState, 2, () => {});
-                    } catch {
-                      // ignore error
-                    }
-                  }
-                });
-              }, 500);
-              Debuger.log('Resume 2');
-            } else if (index === 2) {
-              Dom.selectElementByQuery(Controls.btnResumeContinue, (btn) => {
-                if (Funcs.isButton(btn)) {
-                  setTimeout(() => {
-                    Io.saveToLocal(Ids.resumeImportState, 0, () => {
-                      Callbacks.clickButton(btn);
-                    });
-                  }, 1000);
-                }
-              });
-              Debuger.log('Resume 3');
-            }
-          });
+          working.notClickUploadResume &&
+            Dom.selectElementByQuery(
+              Controls.btnUploadResume,
+              Callbacks.clickButton,
+              () => {
+                working.notClickUploadResume = false;
+              }
+            );
+
+          !working.notClickUploadResume &&
+            working.notClickResumeChoose &&
+            Dom.selectElementByQuery(
+              Controls.btnResumeChoose,
+              Callbacks.clickButton,
+              () => {
+                working.notClickResumeChoose = false;
+              }
+            );
+
+          !working.notClickUploadResume &&
+            !working.notClickResumeChoose &&
+            Dom.selectElementByQuery(
+              Controls.btnResumeContinue,
+              Callbacks.clickButton
+            );
+
           break;
         case PageUrlPatterns.Title:
           Debuger.log('ok: title', PageUrlPatterns.Title);
@@ -226,14 +268,18 @@ const timerId = setInterval(() => {
               Dom.selectElementByQuery(
                 Controls.inputTitle,
                 Callbacks.inputText,
-                text
+                [
+                  text,
+                  () => {
+                    setTimeout(function () {
+                      Dom.selectElementByQuery(
+                        Controls.btnNext,
+                        Callbacks.clickButton
+                      );
+                    }, 500);
+                  },
+                ]
               );
-              setTimeout(function () {
-                Dom.selectElementByQuery(
-                  Controls.btnNext,
-                  Callbacks.clickButton
-                );
-              }, 500);
             }
           });
           break;
@@ -285,57 +331,98 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.Skills:
           Debuger.log('ok skills:  ', PageUrlPatterns.Skills);
-          Io.loadFromLocal(Ids.skillsUse, (skills) => {
-            if (Funcs.isEmpty(skills) || skills.length == 0) {
+          let skills = working.skills;
+          if (Funcs.isEmpty(skills) || skills.length == 0) {
+            if (Funcs.isEmpty(working.currentSkill)) {
               Io.loadFromLocal(Ids.skills, (skillsAll) => {
-                Io.saveToLocal(
-                  Ids.skillsUse,
-                  skillsAll.split(',').map((v) => v.trim()),
-                  () => {
-                    setTimeout(() => {
-                      Dom.selectElementByQuery(
-                        Controls.inputSkills,
-                        (input) => {
-                          if (input) {
-                            input.click();
-                          }
-                        }
-                      );
-                    }, 300);
-                  }
+                working.skills = skillsAll.split(',').map((v) => v.trim());
+                Dom.selectElementByQuery(
+                  Controls.inputSkills,
+                  Callbacks.clickButton
                 );
               });
             } else {
-              Debuger.log(skills);
-              Dom.selectElementByQuery(Controls.ulSkillsSearch, (search) => {
-                let checkSkill = false;
-                if (search && search.children.length > 0) {
-                  search.children[0].click();
-                  checkSkill = true;
-                } else if (working.lastSkill === skills[0]) {
-                  checkSkill = true;
-                }
-                if (checkSkill) {
-                  skills.shift();
-                  if (skills.length === 0) {
-                    Dom.selectElementByQuery(
-                      Controls.btnNext,
-                      Callbacks.clickButton
-                    );
-                  } else {
-                    Io.saveToLocal(Ids.skillsUse, skills);
-                  }
-                } else {
-                  working.lastSkill = skills[0];
-                  Dom.selectElementByQuery(
-                    Controls.inputSkills,
-                    Callbacks.inputText,
-                    skills[0]
-                  );
-                }
-              });
+              Dom.selectElementByQuery(Controls.btnNext, Callbacks.clickButton);
             }
-          });
+          } else {
+            Dom.selectElementByQuery(Controls.ulSkillsSearch, (search) => {
+              if (search && search.children.length > 0) {
+                return;
+              } else {
+                working.currentSkill = skills.shift();
+                Dom.selectElementByQuery(
+                  Controls.inputSkills,
+                  Callbacks.inputText,
+                  [
+                    working.currentSkill,
+                    () => {
+                      setTimeout(() => {
+                        Dom.selectElementByQuery(
+                          Controls.ulSkillsSearch,
+                          (search) => {
+                            if (search && search.children.length > 0) {
+                              Callbacks.clickButton(search.children[0]);
+                            }
+                          }
+                        );
+                      }, 1700);
+                    },
+                  ]
+                );
+              }
+            });
+          }
+          // Io.loadFromLocal(Ids.skillsUse, (skills) => {
+          //   if (Funcs.isEmpty(skills) || skills.length == 0) {
+          //     Io.loadFromLocal(Ids.skills, (skillsAll) => {
+          //       Io.saveToLocal(
+          //         Ids.skillsUse,
+          //         skillsAll.split(',').map((v) => v.trim()),
+          //         () => {
+          //           setTimeout(() => {
+          //             Dom.selectElementByQuery(
+          //               Controls.inputSkills,
+          //               (input) => {
+          //                 if (input) {
+          //                   input.click();
+          //                 }
+          //               }
+          //             );
+          //           }, 300);
+          //         }
+          //       );
+          //     });
+          //   } else {
+          //     Debuger.log(skills);
+          //     Dom.selectElementByQuery(Controls.ulSkillsSearch, (search) => {
+          //       let checkSkill = false;
+          //       if (search && search.children.length > 0) {
+          //         search.children[0].click();
+          //         checkSkill = true;
+          //       } else if (working.currentSkill === skills[0]) {
+          //         checkSkill = true;
+          //       }
+          //       if (checkSkill) {
+          //         skills.shift();
+          //         if (skills.length === 0) {
+          //           Dom.selectElementByQuery(
+          //             Controls.btnNext,
+          //             Callbacks.clickButton
+          //           );
+          //         } else {
+          //           Io.saveToLocal(Ids.skillsUse, skills);
+          //         }
+          //       } else {
+          //         working.currentSkill = skills[0];
+          //         Dom.selectElementByQuery(
+          //           Controls.inputSkills,
+          //           Callbacks.inputText,
+          //           skills[0]
+          //         );
+          //       }
+          //     });
+          //   }
+          // });
           // use by counter
           Io.loadFromLocal(Ids.noSkill, (isNo) => {
             if (isNo === true) {
@@ -437,75 +524,73 @@ const timerId = setInterval(() => {
         case PageUrlPatterns.Location:
           Debuger.log('ok location:  ', PageUrlPatterns.Location);
           const faker = new Faker({ locale: [en, en_US] });
-          Io.loadFromLocal(Ids.phoneNumber, (phoneNumber) => {
-            let number = phoneNumber;
-            if (Funcs.isEmpty(phoneNumber)) {
-              number = Funcs.getRandomPhoneNumbers();
-            }
-            Dom.selectElementByQuery(
-              Controls.inputPhoneNumber,
-              Callbacks.inputTextIfEmpty,
-              number
-            );
-          });
-          setTimeout(() => {
-            Io.loadFromLocal(Ids.zipCode, (zipCode) => {
-              let zip = zipCode;
-              if (Funcs.isEmpty(zipCode)) {
-                zip = Funcs.getRandomZipCode();
-              }
-              Dom.selectElementByQuery(
-                Controls.inputZipCode,
-                Callbacks.inputTextIfEmpty,
-                zip
-              );
-            });
-
-            setTimeout(() => {
-              Io.loadFromLocal(Ids.address, (address) => {
-                let addr = address;
-                if (Funcs.isEmpty(address)) {
-                  addr = faker.location.streetAddress();
-                }
+          working.notLocationSimpleInput &&
+            Io.loadFromLocalObj(
+              [Ids.phoneNumber, Ids.zipCode, Ids.address],
+              (detail) => {
+                const number = Funcs.isEmpty(detail.phoneNumber)
+                  ? Funcs.getRandomPhoneNumbers()
+                  : detail.phoneNumber;
+                const zip = Funcs.isEmpty(detail.zipCode)
+                  ? Funcs.getRandomZipCode()
+                  : detail.zipCode;
+                const addr = Funcs.isEmpty(detail.address)
+                  ? faker.location.streetAddress()
+                  : detail.address;
+                Dom.selectElementByQuery(
+                  Controls.inputPhoneNumber,
+                  Callbacks.inputTextIfEmpty,
+                  number
+                );
+                Dom.selectElementByQuery(
+                  Controls.inputZipCode,
+                  Callbacks.inputTextIfEmpty,
+                  zip
+                );
                 Dom.selectElementByQuery(
                   Controls.inputStreetAddress,
                   Callbacks.inputTextIfEmpty,
                   addr
                 );
-              });
-            }, 300);
-          }, 300);
-          Io.loadFromLocal(Ids.city, (city) => {
-            if (Funcs.isEmpty(city)) {
-              c = String.fromCharCode(
-                Math.floor(Math.random() * 10) + 'A'.charCodeAt(0)
-              );
-              Io.saveToLocal(Ids.city, c);
-            } else {
+                working.notLocationSimpleInput = false;
+              }
+            );
+
+          working.notLocationCityInput &&
+            Io.loadFromLocal(Ids.city, (pattern) => {
+              let city = pattern;
+              if (Funcs.isEmpty(city)) {
+                city = String.fromCharCode(
+                  Math.floor(Math.random() * 10) + 'A'.charCodeAt(0)
+                );
+              }
+
               Dom.selectElementByQuery(Controls.inputCityOther, (other) => {
                 if (Funcs.isInput(other) && other.value.length === 0) {
-                  Dom.selectElementByQuery(Controls.inputCity, (input) => {
-                    if (Funcs.isInput(input)) {
-                      if (input.value && input.value.includes(city)) {
-                        working.cityCombo++;
-                        if (working.cityCombo < 5) {
-                          return;
-                        }
-                        working.cityCombo = 0;
-                      }
-                      Callbacks.inputTextNotBlur(city, input);
-                      setTimeout(() => {
-                        Dom.selectElementByQuery(
-                          Controls.liCityFirst,
-                          Callbacks.clickButton
-                        );
-                      }, 3500);
-                    }
-                  });
+                  console.log("BELA");
+                  Dom.selectElementByQuery(
+                    Controls.inputCity,
+                    Callbacks.inputTextNotBlur,
+                    [
+                      city,
+                      () => {
+                        console.log("BOBOB");
+                        setTimeout(() => {
+                          Dom.selectElementByQuery(
+                            Controls.liCityFirst,
+                            Callbacks.clickButton,
+                            () => {
+                              console.log("BORIS");
+                              working.notLocationCityInput = false;
+                            }
+                          );
+                        }, 2000);
+                      },
+                    ]
+                  );
                 }
               });
-            }
-          });
+            });
           break;
         case PageUrlPatterns.Submit:
           Debuger.log('ok submit:  ', PageUrlPatterns.Submit);
@@ -525,4 +610,4 @@ const timerId = setInterval(() => {
       }
     }
   });
-}, 3000);
+}, 2500);
