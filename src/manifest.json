@@ -20,7 +20,8 @@
     "contextMenus",
     "webNavigation",
     "clipboardRead",
-    "clipboardWrite"
+    "clipboardWrite",
+    "runtime"
   ],
   "icons": {
     "128": "icon-128.png"

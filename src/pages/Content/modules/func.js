@@ -1,8 +1,8 @@
 import Constants from "./const";
 
-const debug = false;
+const debug = true;
 
-const funcs = {
+const Funcs = {
   log: (message, ...params) => {
     debug && console.log(message, ...params);
   },
@@ -80,7 +80,7 @@ const funcs = {
   },
 
   isBtn: (e) => {
-    if (!funcs.isEmpty(e) && typeof e.click === 'function') {
+    if (!Funcs.isEmpty(e) && typeof e.click === 'function') {
       return true;
     } else {
       return false;
@@ -88,7 +88,7 @@ const funcs = {
   },
 
   isInput: (e) => {
-    if (!funcs.isEmpty(e) && (typeof e.value === 'string'||typeof e.innerHTML === 'string')) {
+    if (!Funcs.isEmpty(e) && (typeof e.value === 'string'||typeof e.innerHTML === 'string')) {
       return true;
     } else {
       return false;
@@ -108,7 +108,7 @@ const funcs = {
     } else {
       findElement = findElements[index];
     }
-    if (funcs.isEmpty(findElement)) {
+    if (Funcs.isEmpty(findElement)) {
       const observer = new MutationObserver(() => {
         let elements;
         if(isByClassName === true){
@@ -124,7 +124,7 @@ const funcs = {
           element = elements[index];
         }
 
-        if (funcs.isEmpty(element)) {
+        if (Funcs.isEmpty(element)) {
           callback(null);
         }
         // Stop observing and resolve with the selected element
@@ -146,21 +146,21 @@ const funcs = {
   },
 
   trySelectElementByClassName: (document, identifier, index, callback) => {
-    funcs.selectElement(document, identifier, index, callback, null, true);
+    Funcs.selectElement(document, identifier, index, callback, null, true);
   },
 
   trySelectElementByClassName: (document, identifier, index, callback, inputData) => {
-    funcs.selectElement(document, identifier, index, callback, inputData, true);
+    Funcs.selectElement(document, identifier, index, callback, inputData, true);
   },
   
   trySelectElementBySelector: (document, identifier, index, callback) => {
-    funcs.selectElement(document, identifier, index, callback, null, false);
+    Funcs.selectElement(document, identifier, index, callback, null, false);
   },
 
   trySelectElementBySelector: (document, identifier, index, callback, inputData) => {
-    funcs.selectElement(document, identifier, index, callback, inputData, false);
+    Funcs.selectElement(document, identifier, index, callback, inputData, false);
   }
 }
 
 
-export default funcs;
+export default Funcs;
