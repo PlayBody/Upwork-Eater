@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 const funcLog = true;
 const callbackLog = true;
 const ioLog = true;
