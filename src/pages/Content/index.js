@@ -243,18 +243,18 @@ const timerId = setInterval(() => {
               }
             );
 
-          !working.notClickUploadResume &&
-            working.notClickResumeChoose &&
-            Dom.selectElementByQuery(
-              Controls.btnResumeChoose,
-              Callbacks.clickButton,
-              () => {
-                working.notClickResumeChoose = false;
-              }
-            );
+          // !working.notClickUploadResume &&
+          //   working.notClickResumeChoose &&
+          //   Dom.selectElementByQuery(
+          //     Controls.btnResumeChoose,
+          //     Callbacks.clickButton,
+          //     () => {
+          //       working.notClickResumeChoose = false;
+          //     }
+          //   );
 
           !working.notClickUploadResume &&
-            !working.notClickResumeChoose &&
+            // !working.notClickResumeChoose &&
             Dom.selectElementByQuery(
               Controls.btnResumeContinue,
               Callbacks.clickButton
@@ -567,20 +567,17 @@ const timerId = setInterval(() => {
 
               Dom.selectElementByQuery(Controls.inputCityOther, (other) => {
                 if (Funcs.isInput(other) && other.value.length === 0) {
-                  console.log("BELA");
                   Dom.selectElementByQuery(
                     Controls.inputCity,
                     Callbacks.inputTextNotBlur,
                     [
                       city,
                       () => {
-                        console.log("BOBOB");
                         setTimeout(() => {
                           Dom.selectElementByQuery(
                             Controls.liCityFirst,
                             Callbacks.clickButton,
                             () => {
-                              console.log("BORIS");
                               working.notLocationCityInput = false;
                             }
                           );
@@ -610,4 +607,4 @@ const timerId = setInterval(() => {
       }
     }
   });
-}, 2500);
+}, 2000);

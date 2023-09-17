@@ -26,23 +26,24 @@ const Dom = {
     const document = Dom.document;
     const findElements = isClass ? document.getElementsByClassName(identifier) : document.querySelectorAll(identifier);
     const findElement = Funcs.isEmpty(index) ? findElements : (findElements.length > index ? findElements[index] : null);
-    if (Funcs.isEmpty(findElement)) {
-      const observer = new MutationObserver(() => {
-        const elements = isClass ? document.getElementsByClassName(identifier) : document.querySelectorAll(identifier);
-        const element = Funcs.isEmpty(index) ? elements : (elements.length > index ? elements[index] : null);
-        // Debuger.func(document, "Observer", elements, elements.length, element, identifier, isClass);
-        if (Funcs.isEmpty(element)) {
-          callback(null);
-        }
-        if(Funcs.isEmpty(params)){
-          callback(element);
-        } else {
-          callback(element, params);
-        }
-        observer.disconnect();
-      });
-      observer.observe(document, { subtree: true, childList: true });
-    } else {
+    // if (Funcs.isEmpty(findElement)) {
+    //   const observer = new MutationObserver(() => {
+    //     const elements = isClass ? document.getElementsByClassName(identifier) : document.querySelectorAll(identifier);
+    //     const element = Funcs.isEmpty(index) ? elements : (elements.length > index ? elements[index] : null);
+    //     Debuger.func(document, "Observer", elements, elements.length, element, identifier, isClass);
+    //     if (Funcs.isEmpty(element)) {
+    //       callback(null);
+    //     }
+    //     if(Funcs.isEmpty(params)){
+    //       callback(element);
+    //     } else {
+    //       callback(element, params);
+    //     }
+    //     observer.disconnect();
+    //   });
+    //   observer.observe(document, { subtree: true, childList: true });
+    // } else 
+    {
       if(Funcs.isEmpty(params)){
         callback(findElement);
       } else if(Array.isArray(params)){
