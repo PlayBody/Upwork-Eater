@@ -24,7 +24,7 @@ const Constants = {
   },
   BtnClassNames: {
     getStart: 'air3-btn air3-btn-primary mr-7',
-    skip: 'air3-btn air3-btn-link air3-wizard-skip-link-btn',
+    skip: 'air3-btn air3-btn-link air3-wizard-skip-link-btn'
   },
   Controls: {
     inputFirstName: 'input[id="first-name-input"][type="text"]',
@@ -63,6 +63,9 @@ const Constants = {
     inputCity: 'input[aria-labelledby="city-label"][type="search"]',
     inputCityOther: 'input[aria-labelledby="state-label"][type="text"]',
     liCityFirst: 'li[role="option"][class="is-uncheckable air3-menu-item"]',
+    selectExperience: 'input[type="radio"][aria-labelledby="button-box-16"][class="air3-btn-box-input"][value="FREELANCED_BEFORE"]',
+    selectGoal:'input[type="radio"][aria-labelledby="button-box-18"][class="air3-btn-box-input"][value="MAIN_INCOME"]',
+    selectWorkPreference:'input[type="checkbox"][aria-labelledby="button-box-32"][class="air3-btn-box-input"]',
   },
   Ids: {
     firstName: "firstName",
@@ -77,6 +80,7 @@ const Constants = {
     skills: "skills",
     noSkill: "noSkill",
     skillsUse: "skillsUse",
+    categories:"categories",
     resumeImportState: "resumeImportState",
     languageComboState: "languageComboState",
     hourlyInputState: "hourlyInputState",
