@@ -34,10 +34,11 @@ To use this application effectively, please follow the instructions below:
         "title": "OpenCV | AI | Python",
         "overview": "As a professional web development freelancer, I specialize in creating dynamic and visually appealing websites that are tailored to meet the unique needs of my clients. With a strong background in web technologies and a passion for delivering high-quality results, I strive to exceed expectations and provide exceptional value My expertise lies in front-end development, where I excel in crafting intuitive user interfaces using HTML, CSS, and JavaScript. I have a deep understanding of responsive design principles, ensuring that websites I create are optimized for various devices and screen sizes. Additionally, I am proficient in popular front-end frameworks such as React, Angular, or Vue.js, enabling me to build interactive and feature-rich web applications.",
         "skills": "Java, Spring, OpenCV, AI, Node, C++",
-        "skillOption": "dev / service"
+        "categories": "auto"
       }
       ``` 
-
+   - If you input categories as "auto", you can select the categories automatically.
+   - If you input nothing, you can choose the categories on your hands.
 4. Focus on the Browser:
    - After copying the JSON input string, immediately focus on the browser window. This step ensures that the application captures the copied data accurately.
    - When sign up this extension use default password

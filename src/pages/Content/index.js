@@ -24,6 +24,8 @@ const working = {
   currentSkill: null,
   skills: [],
   clipboard: '',
+  notApplyAsExpert: true,
+  notApplyAsMainIncome: true,
 };
 
 const timerId = setInterval(() => {
@@ -222,15 +224,48 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.Experience:
           Debuger.log('ok exp:  ', PageUrlPatterns.Experience);
-          Dom.selectElementByClass(BtnClassNames.skip, Callbacks.clickButton);
+          Dom.selectElementByQuery(
+            Controls.selectExperience,
+            Callbacks.clickCheckbox,
+            () => {
+              setTimeout(function () {
+                Dom.selectElementByQuery(
+                  Controls.btnNext,
+                  Callbacks.clickButton
+                );
+              }, 500);
+            },
+          );
           break;
         case PageUrlPatterns.Goal:
           Debuger.log('ok goal:  ', PageUrlPatterns.Goal);
-          Dom.selectElementByClass(BtnClassNames.skip, Callbacks.clickButton);
+          Dom.selectElementByQuery(
+            Controls.selectGoal,
+            Callbacks.clickCheckbox,
+            () => {
+              setTimeout(function () {
+                Dom.selectElementByQuery(
+                  Controls.btnNext,
+                  Callbacks.clickButton
+                );
+              }, 500);
+            },
+          );
           break;
         case PageUrlPatterns.WorkPreference:
           Debuger.log('ok prefer:  ', PageUrlPatterns.WorkPreference);
-          Dom.selectElementByClass(BtnClassNames.skip, Callbacks.clickButton);
+          Dom.selectElementByQuery(
+            Controls.selectWorkPreference,
+            Callbacks.clickCheckbox,
+            () => {
+              setTimeout(function () {
+                Dom.selectElementByQuery(
+                  Controls.btnNext,
+                  Callbacks.clickButton
+                );
+              }, 500);
+            },
+          );
           break;
         case PageUrlPatterns.ResumeImport:
           Debuger.log('ok resume:  ', PageUrlPatterns.ResumeImport);
@@ -243,18 +278,7 @@ const timerId = setInterval(() => {
               }
             );
 
-          // !working.notClickUploadResume &&
-          //   working.notClickResumeChoose &&
-          //   Dom.selectElementByQuery(
-          //     Controls.btnResumeChoose,
-          //     Callbacks.clickButton,
-          //     () => {
-          //       working.notClickResumeChoose = false;
-          //     }
-          //   );
-
           !working.notClickUploadResume &&
-            // !working.notClickResumeChoose &&
             Dom.selectElementByQuery(
               Controls.btnResumeContinue,
               Callbacks.clickButton
@@ -474,31 +498,37 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.Categories:
           Debuger.log('ok categories:  ', PageUrlPatterns.Categories);
-          Dom.selectElementByQuery(
-            Controls.btnCategory,
-            (btns) => {
-              let i = 0;
-              const len = btns.length;
-              Debuger.log('btns', btns);
-              for (i = 0; i < len; i++) {
-                let btn = btns[i];
-                if (btn.ariaLabel.includes('Development')) {
-                  btn.click();
-                  //break;
-                }
-              }
-              if (i === len) {
-                setTimeout(() => {
-                  Dom.selectElementByQuery(
-                    Controls.btnNext,
-                    Callbacks.clickButton
-                  );
-                }, 1000);
-              }
-            },
-            null,
-            null
-          );
+          Io.loadFromLocal(Ids.categories, (text) => {
+            if(text === "auto") {
+              Dom.selectElementByQuery(
+                Controls.btnCategory,
+                (btns) => {
+                  let i = 0;
+                  const len = btns.length;
+                  Debuger.log('btns', btns);
+                  for (i = 0; i < len; i++) {
+                    let btn = btns[i];
+                    if (btn.ariaLabel.includes('Development')) {
+                      btn.click();
+                      //break;
+                    }
+                  }
+                  if (i === len) {
+                    setTimeout(() => {
+                      Dom.selectElementByQuery(
+                        Controls.btnNext,
+                        Callbacks.clickButton
+                      );
+                    }, 1000);
+                  }
+                },
+                null,
+                null
+              );
+            } else {
+
+            }
+          });
           break;
         case PageUrlPatterns.Rate:
           Debuger.log('ok rate:  ', PageUrlPatterns.Rate);
