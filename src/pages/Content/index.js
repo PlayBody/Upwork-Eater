@@ -447,7 +447,7 @@ const timerId = setInterval(() => {
         case PageUrlPatterns.Categories:
           Debuger.log('ok categories:  ', PageUrlPatterns.Categories);
           Io.loadFromLocal(Ids.categories, (text) => {
-            if (text !== '' || text === null) {
+            if (text === '' || text === null) {
               Dom.selectElementByQuery(
                 Controls.btnCategory,
                 (btns) => {
