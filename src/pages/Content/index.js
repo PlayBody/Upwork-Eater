@@ -234,7 +234,7 @@ const timerId = setInterval(() => {
                   Callbacks.clickButton
                 );
               }, 500);
-            },
+            }
           );
           break;
         case PageUrlPatterns.Goal:
@@ -249,7 +249,7 @@ const timerId = setInterval(() => {
                   Callbacks.clickButton
                 );
               }, 500);
-            },
+            }
           );
           break;
         case PageUrlPatterns.WorkPreference:
@@ -264,7 +264,7 @@ const timerId = setInterval(() => {
                   Callbacks.clickButton
                 );
               }, 500);
-            },
+            }
           );
           break;
         case PageUrlPatterns.ResumeImport:
@@ -396,58 +396,6 @@ const timerId = setInterval(() => {
               }
             });
           }
-          // Io.loadFromLocal(Ids.skillsUse, (skills) => {
-          //   if (Funcs.isEmpty(skills) || skills.length == 0) {
-          //     Io.loadFromLocal(Ids.skills, (skillsAll) => {
-          //       Io.saveToLocal(
-          //         Ids.skillsUse,
-          //         skillsAll.split(',').map((v) => v.trim()),
-          //         () => {
-          //           setTimeout(() => {
-          //             Dom.selectElementByQuery(
-          //               Controls.inputSkills,
-          //               (input) => {
-          //                 if (input) {
-          //                   input.click();
-          //                 }
-          //               }
-          //             );
-          //           }, 300);
-          //         }
-          //       );
-          //     });
-          //   } else {
-          //     Debuger.log(skills);
-          //     Dom.selectElementByQuery(Controls.ulSkillsSearch, (search) => {
-          //       let checkSkill = false;
-          //       if (search && search.children.length > 0) {
-          //         search.children[0].click();
-          //         checkSkill = true;
-          //       } else if (working.currentSkill === skills[0]) {
-          //         checkSkill = true;
-          //       }
-          //       if (checkSkill) {
-          //         skills.shift();
-          //         if (skills.length === 0) {
-          //           Dom.selectElementByQuery(
-          //             Controls.btnNext,
-          //             Callbacks.clickButton
-          //           );
-          //         } else {
-          //           Io.saveToLocal(Ids.skillsUse, skills);
-          //         }
-          //       } else {
-          //         working.currentSkill = skills[0];
-          //         Dom.selectElementByQuery(
-          //           Controls.inputSkills,
-          //           Callbacks.inputText,
-          //           skills[0]
-          //         );
-          //       }
-          //     });
-          //   }
-          // });
-          // use by counter
           Io.loadFromLocal(Ids.noSkill, (isNo) => {
             if (isNo === true) {
               Dom.selectElementByQuery(Controls.listSkills, (listParent) => {
@@ -499,7 +447,7 @@ const timerId = setInterval(() => {
         case PageUrlPatterns.Categories:
           Debuger.log('ok categories:  ', PageUrlPatterns.Categories);
           Io.loadFromLocal(Ids.categories, (text) => {
-            if(text === "auto") {
+            if (text !== '' || text === null) {
               Dom.selectElementByQuery(
                 Controls.btnCategory,
                 (btns) => {
@@ -525,8 +473,6 @@ const timerId = setInterval(() => {
                 null,
                 null
               );
-            } else {
-
             }
           });
           break;
