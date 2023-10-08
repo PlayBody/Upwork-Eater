@@ -310,7 +310,7 @@ const timerId = setInterval(() => {
             } else if (index === 1) {
               Dom.selectElementByQuery(Controls.ulLanguage, (listParent) => {
                 if (!Funcs.isEmpty(listParent)) {
-                  listParent.children[2].click();
+                  listParent.children[3].click();
                 }
               });
               Io.saveToLocal(Ids.languageComboState, 2);
