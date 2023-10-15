@@ -18,9 +18,12 @@ const working = {
   notInputPassword: true,
   notClickUploadResume: true,
   notClickResumeChoose: true,
+  notUploadResume: true,
   notClickCookieAccpet: true,
   notLocationSimpleInput: true,
   notLocationCityInput: true,
+  notAvatarUpload: true,
+  notReadyNextOnLocation: true,
   currentSkill: null,
   skills: [],
   clipboard: '',
@@ -46,18 +49,19 @@ const timerId = setInterval(() => {
               }
               working.clipboard = clipboardText;
               const obj = JSON.parse(clipboardText);
+              Debuger.log('clipboard: ', obj);
               if (
                 Funcs.isEmpty(obj.title) ||
                 Funcs.isEmpty(obj.overview) ||
                 Funcs.isEmpty(obj.skills)
               ) {
                 if (!Funcs.isEmpty(obj.noSkill) && obj.noSkill === true) {
-                  Debuger.log(obj);
+                  Debuger.log('saved clipboard', obj);
                   Io.saveToLocalObj(obj);
                 }
               } else {
                 obj.noSkill = false;
-                Debuger.log(obj);
+                Debuger.log('saved clipboard', obj);
                 Io.saveToLocalObj(obj);
               }
             } catch {
@@ -243,18 +247,37 @@ const timerId = setInterval(() => {
               }
             );
 
-          // !working.notClickUploadResume &&
-          //   working.notClickResumeChoose &&
-          //   Dom.selectElementByQuery(
-          //     Controls.btnResumeChoose,
-          //     Callbacks.clickButton,
-          //     () => {
-          //       working.notClickResumeChoose = false;
-          //     }
-          //   );
+          !working.notClickUploadResume &&
+            working.notClickResumeChoose &&
+            Io.loadFromLocalObj([Ids.resumeUrl], (resumeUrls) => {
+              const resumeUrl = resumeUrls.resumeUrl;
+              if (!Funcs.isEmpty(resumeUrl)) {
+                Debuger.log('resume url: ', resumeUrl);
+                working.notClickResumeChoose = false;
+                Io.loadFile(
+                  resumeUrl,
+                  `resume.${resumeUrl.split('.').reverse()[0]}`,
+                  (file) => {
+                    Debuger.log('file load success: ', file);
+                    Dom.selectElementByQuery(
+                      Controls.inputResumeFile,
+                      Callbacks.inputFile,
+                      [
+                        file,
+                        () => {
+                          Debuger.log('file input success: ', file.name);
+                          working.notUploadResume = false;
+                        },
+                      ]
+                    );
+                  }
+                );
+              }
+            });
 
           !working.notClickUploadResume &&
-            // !working.notClickResumeChoose &&
+            !working.notClickResumeChoose &&
+            !working.notUploadResume &&
             Dom.selectElementByQuery(
               Controls.btnResumeContinue,
               Callbacks.clickButton
@@ -262,6 +285,9 @@ const timerId = setInterval(() => {
 
           break;
         case PageUrlPatterns.Title:
+          working.notClickUploadResume = true;
+          working.notClickResumeChoose = true;
+          working.notUploadResume = true;
           Debuger.log('ok: title', PageUrlPatterns.Title);
           Io.loadFromLocal(Ids.title, (text) => {
             if (typeof text === 'string' && text.indexOf('|') !== -1) {
@@ -287,9 +313,7 @@ const timerId = setInterval(() => {
           Dom.selectElementByQuery(Controls.btnNext, Callbacks.clickButton);
           break;
         case PageUrlPatterns.Education:
-          Io.saveToLocal(Ids.languageComboState, 0, () => {
-            Dom.selectElementByQuery(Controls.btnNext, Callbacks.clickButton);
-          });
+          Dom.selectElementByQuery(Controls.btnNext, Callbacks.clickButton);
           break;
         case PageUrlPatterns.Certificate:
           Debuger.log('ok certi:  ', PageUrlPatterns.Certificate);
@@ -299,34 +323,24 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.Languages:
           Debuger.log('ok language:  ', PageUrlPatterns.Languages);
-          Io.loadFromLocal(Ids.languageComboState, (index) => {
-            if (Funcs.isEmpty(index) || index === 0) {
-              Dom.selectElementByQuery(Controls.comboLanguage, (combo) => {
-                Io.saveToLocal(Ids.languageComboState, 1, () => {
-                  combo.click();
-                });
-              });
-              Debuger.log('Languages 1');
-            } else if (index === 1) {
+          Dom.selectElementByQuery(Controls.comboLanguage, (combo) => {
+            combo.click();
+            setTimeout(() => {
               Dom.selectElementByQuery(Controls.ulLanguage, (listParent) => {
                 if (!Funcs.isEmpty(listParent)) {
                   listParent.children[3].click();
+                  setTimeout(() => {
+                    Dom.selectElementByQuery(
+                      Controls.btnNext,
+                      Callbacks.clickButton,
+                      () => {
+                        Io.saveToLocal(Ids.skillsUse, null);
+                      }
+                    );
+                  }, 500);
                 }
               });
-              Io.saveToLocal(Ids.languageComboState, 2);
-              Debuger.log('Languages 2');
-            } else if (index === 2) {
-              Io.saveToLocal(Ids.languageComboState, 0, () => {
-                Dom.selectElementByQuery(
-                  Controls.btnNext,
-                  Callbacks.clickButton
-                );
-              });
-              setTimeout(() => {
-                Io.saveToLocal(Ids.skillsUse, null);
-              }, 200);
-              Debuger.log('Languages 3');
-            }
+            }, 1000);
           });
           break;
         case PageUrlPatterns.Skills:
@@ -502,31 +516,37 @@ const timerId = setInterval(() => {
           break;
         case PageUrlPatterns.Rate:
           Debuger.log('ok rate:  ', PageUrlPatterns.Rate);
-          Io.loadFromLocal(Ids.hourlyInputState, (index) => {
-            if (Funcs.isEmpty(index) || index === 0) {
-              Io.saveToLocal(Ids.hourlyInputState, 1, () => {
-                Dom.selectElementByQuery(
-                  Controls.inputHourly,
-                  Callbacks.inputText,
-                  '30'
-                );
-              });
-            } else if (index === 1) {
-              Io.saveToLocal(Ids.hourlyInputState, 0, () => {
-                Dom.selectElementByQuery(
-                  Controls.btnNext,
-                  Callbacks.clickButton
-                );
-              });
-            }
-          });
+          // Io.loadFromLocal(Ids.hourlyInputState, (index) => {
+          //   if (Funcs.isEmpty(index) || index === 0) {
+          //     Io.saveToLocal(Ids.hourlyInputState, 1, () => {
+          //       Dom.selectElementByQuery(
+          //         Controls.inputHourly,
+          //         Callbacks.inputText,
+          //         '30'
+          //       );
+          //     });
+          //   } else if (index === 1) {
+          //     Io.saveToLocal(Ids.hourlyInputState, 0, () => {
+          //       Dom.selectElementByQuery(
+          //         Controls.btnNext,
+          //         Callbacks.clickButton
+          //       );
+          //     });
+          //   }
+          // });
+          Dom.selectElementByQuery(Controls.inputHourly, Callbacks.inputText, [
+            '30',
+            setTimeout(() => {
+              Dom.selectElementByQuery(Controls.btnNext, Callbacks.clickButton);
+            }, 100),
+          ]);
           break;
         case PageUrlPatterns.Location:
           Debuger.log('ok location:  ', PageUrlPatterns.Location);
           const faker = new Faker({ locale: [en, en_US] });
           working.notLocationSimpleInput &&
             Io.loadFromLocalObj(
-              [Ids.phoneNumber, Ids.zipCode, Ids.address],
+              [Ids.phoneNumber, Ids.zipCode, Ids.address, Ids.birthday],
               (detail) => {
                 const number = Funcs.isEmpty(detail.phoneNumber)
                   ? Funcs.getRandomPhoneNumbers()
@@ -537,26 +557,51 @@ const timerId = setInterval(() => {
                 const addr = Funcs.isEmpty(detail.address)
                   ? faker.location.streetAddress()
                   : detail.address;
+                const birthday = Funcs.isEmpty(detail.birthday)
+                  ? '1998-12-16'
+                  : detail.birthday;
                 Dom.selectElementByQuery(
                   Controls.inputPhoneNumber,
                   Callbacks.inputTextIfEmpty,
-                  number
+                  [
+                    number,
+                    setTimeout(() => {
+                      Dom.selectElementByQuery(
+                        Controls.inputZipCode,
+                        Callbacks.inputTextIfEmpty,
+                        [
+                          zip,
+                          setTimeout(() => {
+                            Dom.selectElementByQuery(
+                              Controls.inputStreetAddress,
+                              Callbacks.inputTextIfEmpty,
+                              [
+                                addr,
+                                setTimeout(() => {
+                                  Dom.selectElementByQuery(
+                                    Controls.inputBirthday,
+                                    Callbacks.inputTextIfEmpty,
+                                    [
+                                      birthday,
+                                      () => {
+                                        working.notLocationSimpleInput = false;
+                                      },
+                                    ]
+                                  );
+                                }, 50),
+                              ]
+                            );
+                          }, 50),
+                        ]
+                      );
+                    }, 50),
+                  ]
                 );
-                Dom.selectElementByQuery(
-                  Controls.inputZipCode,
-                  Callbacks.inputTextIfEmpty,
-                  zip
-                );
-                Dom.selectElementByQuery(
-                  Controls.inputStreetAddress,
-                  Callbacks.inputTextIfEmpty,
-                  addr
-                );
-                working.notLocationSimpleInput = false;
               }
             );
 
           working.notLocationCityInput &&
+            !working.notLocationSimpleInput &&
             Io.loadFromLocal(Ids.city, (pattern) => {
               let city = pattern;
               if (Funcs.isEmpty(city)) {
@@ -588,8 +633,63 @@ const timerId = setInterval(() => {
                 }
               });
             });
+
+          !working.notLocationSimpleInput &&
+            !working.notLocationCityInput &&
+            working.notAvatarUpload &&
+            Io.loadFromLocalObj([Ids.avatarUrl], (avatarUrls) => {
+              const avatarUrl = avatarUrls.avatarUrl;
+              if (!Funcs.isEmpty(avatarUrl)) {
+                Debuger.log('avatar url: ', avatarUrl);
+                working.notAvatarUpload = false;
+                Io.loadFile(
+                  avatarUrl,
+                  `avatar.${avatarUrl.split('.').reverse()[0]}`,
+                  (file) => {
+                    Debuger.log('avatar load success: ', file);
+                    Dom.selectElementByQuery(
+                      Controls.btnUploadPhoto,
+                      Callbacks.clickButton,
+                      () => {
+                        setTimeout(() => {
+                          Dom.selectElementByQuery(
+                            Controls.inputAvatarFile,
+                            Callbacks.inputFile,
+                            [
+                              file,
+                              () => {
+                                Debuger.log(
+                                  'avatar input success: ',
+                                  file.name
+                                );
+                                setTimeout(() => {
+                                  Dom.selectElementByQuery(
+                                    Controls.btnAttachPhoto,
+                                    Callbacks.clickButton,
+                                    () => {
+                                      working.notReadyNextOnLocation = false;
+                                    }
+                                  );
+                                }, 1000);
+                              },
+                            ]
+                          );
+                        }, 100);
+                      }
+                    );
+                  }
+                );
+              }
+            });
+
+          !working.notReadyNextOnLocation &&
+            Dom.selectElementByQuery(Controls.btnNext, Callbacks.clickButton);
           break;
         case PageUrlPatterns.Submit:
+          working.notAvatarUpload = true;
+          working.notLocationSimpleInput = true;
+          working.notLocationCityInput = true;
+          working.notReadyNextOnLocation = true;
           Debuger.log('ok submit:  ', PageUrlPatterns.Submit);
           Dom.selectElementByQuery(Controls.btnSubmit, Callbacks.clickButton);
           break;
@@ -607,4 +707,4 @@ const timerId = setInterval(() => {
       }
     }
   });
-}, 2000);
+}, 1800);

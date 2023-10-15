@@ -117,6 +117,30 @@ const Callbacks = {
       Callbacks.inputText(input, text, callback);
     }
   },
+
+  inputFile: (input, ...params) => {
+    Debuger.callback("inputFile", input, params);
+    if (input && typeof input.accept === 'string') {
+      const [file, callback] = params;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      const event = new Event("change", {
+        bubbles: !0,
+      });
+      input.onchange = () => {
+        if(typeof callback === 'function'){
+          if(callback.length > 0){
+            callback(input);
+          } else {
+            callback();
+          }
+        }
+        input.onchange = null;
+      }
+      input.dispatchEvent(event);
+    }
+  }
 };
 
 export default Callbacks;

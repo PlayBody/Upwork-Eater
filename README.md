@@ -1,54 +1,62 @@
 <img src="src/assets/img/icon-128.png" width="64"/>
 
-# Chrome Extension Auto Sign up on Upwork.com
+# Chrome Extension Auto Sign up on Upwork.com v1.7
 
 [![npm](https://img.shields.io/npm/v/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
 [![npm-download](https://img.shields.io/npm/dw/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
 [![npm](https://img.shields.io/npm/dm/chrome-extension-boilerplate-react)](https://www.npmjs.com/package/chrome-extension-boilerplate-react)
-
 
 ## How to Use
 
 To use this application effectively, please follow the instructions below:
 
 1. Manual Actions:
-   - Email Verification: You will need to manually verify your email address as part of the registration process.
-   - Resume Upload: Please follow the provided instructions to upload your resume manually.
-   - Avatar Image Upload: You are required to upload an avatar image. Detailed instructions will be provided for this step.
+
+   - Before use this extension you must upload resume and avatar to https://tmpfiles.org.
+   - Install CORS Unblock extension and config like it.\
+     <img src="cors.png" width="450"/>\
+     Or you can use `extension.reg` file to auto install.
+   - Email Verification: You will need to manually verify your email address as part of the registration process yet.
 
 2. Grant Clipboard Access Permission:
+
    - To proceed, you must grant clipboard access permission to the Chrome browser. This permission is necessary for the application to function correctly.
 
 3. Copy JSON Input String:
+
    - Copy the JSON input string provided by the application. This string contains essential data for further processing.
-      This is sample json content to copy
-      ```json
-      {
-        "country": "Japan(optional)",
-        "firstName": "Kastumoto(optional)",
-        "lastName": "Hideo(optional)",
-        "phoneNumber": "123123123(optional)",
-        "zipCode": "15550(optional)",
-        "address": "Osaka(optional)",
-        "city": "Osaka(optional prefer 1 or 2 charaters)",
-        "title": "OpenCV | AI | Python",
-        "overview": "As a professional web development freelancer, I specialize in creating dynamic and visually appealing websites that are tailored to meet the unique needs of my clients. With a strong background in web technologies and a passion for delivering high-quality results, I strive to exceed expectations and provide exceptional value My expertise lies in front-end development, where I excel in crafting intuitive user interfaces using HTML, CSS, and JavaScript. I have a deep understanding of responsive design principles, ensuring that websites I create are optimized for various devices and screen sizes. Additionally, I am proficient in popular front-end frameworks such as React, Angular, or Vue.js, enabling me to build interactive and feature-rich web applications.",
-        "skills": "Java, Spring, OpenCV, AI, Node, C++"
-      }
-      ``` 
+     This is sample json content to copy
+     ```json
+     {
+       "country": "Japan",
+       "firstName": "Kastumoto",
+       "lastName": "Hideo",
+       "phoneNumber": "123123123",
+       "birthday": "1998-12-16",
+       "zipCode": "15550",
+       "address": "Hono",
+       "city": "Osaka",
+       "avatarUrl": "https://tmpfiles.org/dl/2838756/48.png",
+       "resumeUrl": "https://tmpfiles.org/dl/2835221/kastumotohideo-opencv.pdf",
+       "title": "OpenCV | AI | Python",
+       "overview": "As a professional web development freelancer, I specialize in creating dynamic and visually appealing websites that are tailored to meet the unique needs of my clients. With a strong background in web technologies and a passion for delivering high-quality results, I strive to exceed expectations and provide exceptional value My expertise lies in front-end development, where I excel in crafting intuitive user interfaces using HTML, CSS, and JavaScript. I have a deep understanding of responsive design principles, ensuring that websites I create are optimized for various devices and screen sizes. Additionally, I am proficient in popular front-end frameworks such as React, Angular, or Vue.js, enabling me to build interactive and feature-rich web applications.",
+       "skills": "Java, Spring, OpenCV, AI, Node, C++",
+       "isExit": false
+     }
+     ```
 
 4. Focus on the Browser:
    - After copying the JSON input string, immediately focus on the browser window. This step ensures that the application captures the copied data accurately.
    - When sign up this extension use default password
-      ```
-      ][po}{PO=-09+_)(
-      ```
+     ```
+     ][po}{PO=-09+_)(
+     ```
 
 By carefully following these instructions, you will be able to utilize the application efficiently and achieve a seamless user experience.
 
 5. For injo...
    - If anyone who like make fake account on upwork want contribute this project....🤫🤪
-    Create fork and pull request or make issue. 
+     Create fork and pull request or make issue.
 
 ## Features
 
@@ -176,4 +184,3 @@ ApiCall({ key: secrets.key });
 - [Chrome Extension documentation](https://developer.chrome.com/extensions/getstarted)
 
 ---
-

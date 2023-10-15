@@ -19,8 +19,8 @@ const Constants = {
     Categories: "/nx/create-profile/categories",
     Rate: "/nx/create-profile/rate",
     Location: "/nx/create-profile/location",
-    Submit: "submit",
-    Finish: "finish",
+    Submit: "/nx/create-profile/submit",
+    Finish: "/nx/create-profile/finish",
   },
   BtnClassNames: {
     getStart: 'air3-btn air3-btn-primary mr-7',
@@ -45,6 +45,7 @@ const Constants = {
     btnResumeRemove: 'button[data-qa="resume-remove-btn"][class="air3-btn air3-btn-link air3-btn-circle"]',
     btnResumeContinue: 'button:not([disabled="disabled"])[data-qa="resume-upload-continue-btn"]',
     inputTitle: 'input[aria-required="true"][type="text"][aria-labelledby="title-label"][class="air3-input form-control"]',
+    inputResumeFile: 'input[type="file"]',
     ulLanguage: 'ul[aria-labelledby="dropdown-label-english"][role="listbox"][data-test="menu"]',
     comboLanguage:'div[data-test="dropdown-toggle"][aria-expanded="false"]',
     listSkills: 'div[aria-labelledby="token-container-label"][class="token-container"]',
@@ -59,16 +60,21 @@ const Constants = {
     txtOverView: 'textarea[aria-labelledby="overview-label"][aria-describedby="overview-counter"]',
     inputPhoneNumber: 'input[type="tel"][inputmode="numeric"]',
     inputZipCode: 'input[data-qa="zip"][aria-labelledby="postal-code-label"]',
+    inputBirthday: 'input[aria-labelledby="date-of-birth-label"][type="text"]',
     inputStreetAddress: 'input[aria-labelledby="street-label"][type="text"]',
+    inputAvatarFile: 'input[type="file"][name="imageUpload"]',
     inputCity: 'input[aria-labelledby="city-label"][type="search"]',
     inputCityOther: 'input[aria-labelledby="state-label"][type="text"]',
     liCityFirst: 'li[role="option"][class="is-uncheckable air3-menu-item"]',
+    btnUploadPhoto: 'button[type="button"][class="air3-btn air3-btn-secondary air3-btn-sm"][data-qa="open-loader"]',
+    btnAttachPhoto: 'button[data-qa="btn-save"][class="air3-btn air3-btn-primary"][type="button"]'
   },
   Ids: {
     firstName: "firstName",
     lastName: "lastName",
     country: "country",
     address: "address",
+    birthday: "birthday",
     phoneNumber: "phoneNumber",
     city: "city",
     zipCode: "zipCode",
@@ -77,11 +83,10 @@ const Constants = {
     skills: "skills",
     noSkill: "noSkill",
     skillsUse: "skillsUse",
-    resumeImportState: "resumeImportState",
-    languageComboState: "languageComboState",
-    hourlyInputState: "hourlyInputState",
     skillCountState: "skillCountState",
-    isExit: "isExit"
+    isExit: "isExit",
+    resumeUrl: "resumeUrl",
+    avatarUrl: "avatarUrl",
   }
 }
 

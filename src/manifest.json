@@ -20,7 +20,13 @@
     "contextMenus",
     "webNavigation",
     "clipboardRead",
-    "clipboardWrite"
+    "clipboardWrite",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*",
+    "<all_urls>"
   ],
   "icons": {
     "128": "icon-128.png"
