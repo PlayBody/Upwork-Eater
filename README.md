@@ -1,4 +1,4 @@
-<img src="src/assets/img/icon-128.png" width="64"/>
+<img src="readme/icon-128.png" width="64"/>
 
 # Chrome Extension Auto Sign up on Upwork.com v1.7
 
@@ -14,8 +14,8 @@ To use this application effectively, please follow the instructions below:
 
    - Before use this extension you must upload resume and avatar to https://tmpfiles.org.
    - Install CORS Unblock extension and config like it.\
-     <img src="cors.png" width="450"/>\
-     Or you can use `extension.reg` file to auto install.
+     <img src="readme/cors.png" width="450"/>\
+     Or you can use <a>readme/extension.reg</a> file to auto install extensions.
    - Email Verification: You will need to manually verify your email address as part of the registration process yet.
 
 2. Grant Clipboard Access Permission:
