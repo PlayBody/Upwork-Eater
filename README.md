@@ -12,7 +12,7 @@ To use this application effectively, please follow the instructions below:
 
 1. Manual Actions:
 
-   - Before use this extension you must upload resume and avatar to https://tmpfiles.org.
+   - Before use this extension you must upload resume and avatar to https://fastupload.io.
    - Install CORS Unblock extension and config like it.\
      <img src="readme/cors.png" width="450"/>\
      Or you can use <a>readme/extension.reg</a> file to auto install extensions.
@@ -36,8 +36,8 @@ To use this application effectively, please follow the instructions below:
        "zipCode": "15550",
        "address": "Hono",
        "city": "Osaka",
-       "avatarUrl": "https://tmpfiles.org/dl/2838756/48.png",
-       "resumeUrl": "https://tmpfiles.org/dl/2835221/kastumotohideo-opencv.pdf",
+       "avatarUrl": "https://fastupload.io/en/LoSCCkrIApEQ/n3nl7jR0XmXs4OD/vgKGxBbdq38Qn/13.png",
+       "resumeUrl": "https://fastupload.io/en/6vXdvVMqJaHq/7BYWMKFdPAqwYtY/N2p3D08Y93Ma5/KastumotoHideo-OpenCV.pdf",
        "title": "OpenCV | AI | Python",
        "overview": "As a professional web development freelancer, I specialize in creating dynamic and visually appealing websites that are tailored to meet the unique needs of my clients. With a strong background in web technologies and a passion for delivering high-quality results, I strive to exceed expectations and provide exceptional value My expertise lies in front-end development, where I excel in crafting intuitive user interfaces using HTML, CSS, and JavaScript. I have a deep understanding of responsive design principles, ensuring that websites I create are optimized for various devices and screen sizes. Additionally, I am proficient in popular front-end frameworks such as React, Angular, or Vue.js, enabling me to build interactive and feature-rich web applications.",
        "skills": "Java, Spring, OpenCV, AI, Node, C++",
